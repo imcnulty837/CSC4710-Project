@@ -4,6 +4,8 @@
 .mtj.tmp/
 *.class
 *.jar
+!mysql-connector-java-5.1.32-bin.jar
+!mysql-connector-java-8.0.13.jar
 *.war
 *.ear
 *.nar
