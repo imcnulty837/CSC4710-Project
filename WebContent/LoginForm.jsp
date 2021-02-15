@@ -27,9 +27,14 @@
 					</td>
 				</tr>
 			</table>
-			<h2>
-				<a href="register">Register Here</a>
-			</h2>
+			<table> 
+				<th>
+					<a href="AccountView.jsp" target="_self">Login</a>
+				</th>
+				<th>
+					<a href="RegisterForm.jsp" target="_self">Register Here</a>
+				</th>
+			</table>
 		</form>
 	</div>
 </body>
