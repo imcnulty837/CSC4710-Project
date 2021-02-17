@@ -23,7 +23,7 @@
 					</td>
 				<tr>
 					<td colspan="2" align="center">
-						<input type="login" value="login"/>
+						<input type="submit" value="login"/>
 					</td>
 				</tr>
 			</table>

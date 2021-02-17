@@ -1,15 +1,20 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
- 
+import java.util.Scanner;
+import java.util.TreeMap;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,20 +30,55 @@ import java.sql.PreparedStatement;
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PeopleDAO peopleDAO;
+    TreeMap<String, String> users;
  
     public void init() {
-        peopleDAO = new PeopleDAO(); 
+        //peopleDAO = new PeopleDAO(); 
+        
+        //initialize our TreeMap users containing our webpage users login data
+        users = new TreeMap<String,String>();
+        populateUsers();
+    }
+    
+    public void populateUsers() {
+    	//reads the loginData file and inserts all webpage users into a TreeMap
+    	try {
+    		File loginData = new File("C:\\Users\\Vulcan\\git\\CSC4710-Project\\src\\LoginData");
+    		Scanner reader = new Scanner(loginData);
+    		while(reader.hasNextLine()) {
+    			String[] data = reader.nextLine().split("\t");
+    			users.put(data[0], data[1]);
+    		}
+    		reader.close();
+    	}
+    	catch(FileNotFoundException e) {
+    		System.out.println("failed to read login data file.");
+    		e.printStackTrace();
+    	}
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
- 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    	System.out.println("how did i get here?");
         String action = request.getServletPath();
         System.out.println(action);
+        
+        try {
+        	switch(action) {
+        	case "/login":
+        		 //When a login attempt occurs in login.jsp, it passes through doGet then calls our login function below
+        		login(request,response);
+        		break;
+        	}
+        }
+        catch(Exception ex) {
+        	throw new ServletException(ex);
+        }
+        /* Disabled the functions we're not currently using
         try {
             switch (action) {
             case "/new":
@@ -63,8 +103,9 @@ public class ControlServlet extends HttpServlet {
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
+        */
     }
-    
+
     private void listPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         List<People> listPeople = peopleDAO.listAllPeople();
@@ -126,5 +167,26 @@ public class ControlServlet extends HttpServlet {
         peopleDAO.delete(id);
         response.sendRedirect("list"); 
     }
-
+   
+    private void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	//get parameters from our login.jsp textboxes
+    	 String username = request.getParameter("username");
+    	 String password = request.getParameter("password");
+    	 
+    	 //simple if to compare the textbox contents with our users treemap
+    	 if(users.containsKey(username)) {
+    		 if(users.get(username).equals(password)) {
+    			 System.out.println("Login Successful! Redirecting now!");
+    			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
+    			 session.setAttribute("username", username);
+    			 response.sendRedirect("AccountView");				//redirect our user to accountview
+    		 }
+    		 else {
+    			 System.out.println("Invalid Password");
+    		 }
+    	 }
+    	 else {
+    		 System.out.println("The specified user does not exist");
+    	 }
+    }
 }

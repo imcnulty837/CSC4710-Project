@@ -49,7 +49,7 @@
 					<a href="AccountView.jsp" target="_self">Register</a>
 				</th>
 				<th>
-					<a href="LoginForm.jsp" target="_self">Return to Login Page</a>
+					<a href="login.jsp" target="_self">Return to Login Page</a>
 				</th>
 			</table>
 		</form>
