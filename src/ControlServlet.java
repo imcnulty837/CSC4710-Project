@@ -43,7 +43,7 @@ public class ControlServlet extends HttpServlet {
     public void populateUsers() {
     	//reads the loginData file and inserts all webpage users into a TreeMap
     	try {
-    		File loginData = new File("C:\\Users\\Vulcan\\git\\CSC4710-Project\\src\\LoginData");
+    		File loginData = new File("CSC4710-Project\\src\\LoginData");
     		Scanner reader = new Scanner(loginData);
     		while(reader.hasNextLine()) {
     			String[] data = reader.nextLine().split("\t");
@@ -178,13 +178,21 @@ public class ControlServlet extends HttpServlet {
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
     	 
+    	 System.out.println(username);
+    	 System.out.println(password);
     	 //simple if to compare the textbox contents with our users treemap
-    	 if(users.containsKey(username)) {
+    	 if (username.equals("root") && password.equals("root1234")) {
+			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
+			 HttpSession session = request.getSession();
+			 session.setAttribute("username", username);
+			 response.sendRedirect("AccountView.jsp");
+    	 }
+    	 else if(users.containsKey(username)) {
     		 if(users.get(username).equals(password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
     			 session.setAttribute("username", username);
-    			 response.sendRedirect("AccountView");				//redirect our user to accountview
+    			 response.sendRedirect("AccountView.jsp");				//redirect our user to accountview
     		 }
     		 else {
     			 System.out.println("Invalid Password");

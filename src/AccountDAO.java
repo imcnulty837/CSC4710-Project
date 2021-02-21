@@ -56,7 +56,7 @@ public class AccountDAO {
     
     public List<Account> listAllPeople() throws SQLException {
         List<Account> listPeople = new ArrayList<Account>();        
-        String sql = "SELECT * FROM student";      
+        String sql = "SELECT * FROM User";      
         connect_func();      
         statement =  (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -86,7 +86,7 @@ public class AccountDAO {
          
     public boolean insert(Account people) throws SQLException {
     	connect_func();         
-		String sql = "insert into student(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
+		String sql = "insert into User(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		preparedStatement.setString(1, people.email);
 		preparedStatement.setString(2, people.firstName);
@@ -103,7 +103,7 @@ public class AccountDAO {
     }     
      
     public boolean delete(String email) throws SQLException {
-        String sql = "DELETE FROM student WHERE email = ?";        
+        String sql = "DELETE FROM User WHERE email = ?";        
         connect_func();
          
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
@@ -116,7 +116,7 @@ public class AccountDAO {
     }
      
     public boolean update(Account people) throws SQLException {
-        String sql = "update student set firstName=?, lastName =?,password = ?,birthday=?, gender=? where email = ?";
+        String sql = "update User set firstName=?, lastName =?,password = ?,birthday=?, gender=? where email = ?";
         connect_func();
         
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
@@ -135,7 +135,7 @@ public class AccountDAO {
 	
     public Account getPeople(String email) throws SQLException {
     	Account people = null;
-        String sql = "SELECT * FROM student WHERE email = ?";
+        String sql = "SELECT * FROM User WHERE email = ?";
          
         connect_func();
          
