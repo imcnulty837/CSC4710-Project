@@ -36,11 +36,12 @@ public class ControlServlet extends HttpServlet {
         accountDAO = new AccountDAO(); 
         
         //initialize our TreeMap users containing our webpage users login data
-        users = new TreeMap<String,String>();
-        populateUsers();
+        //users = new TreeMap<String,String>();
+        //populateUsers();
     }
     
     public void populateUsers() {
+    	/*
     	//reads the loginData file and inserts all webpage users into a TreeMap
     	try {
     		File loginData = new File("CSC4710-Project\\src\\LoginData");
@@ -55,6 +56,7 @@ public class ControlServlet extends HttpServlet {
     		System.out.println("failed to read login data file.");
     		e.printStackTrace();
     	}
+    	*/
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
