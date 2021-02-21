@@ -75,6 +75,14 @@ public class ControlServlet extends HttpServlet {
         		 //When a login attempt occurs in login.jsp, it passes through doGet then calls our login function below
         		login(request,response);
         		break;
+        	case "/register":
+        		register(request, response);
+        		break;
+        	case "/initialize":
+        		accountDAO.initialize();
+        		System.out.println("Database successfully initialized!");
+        		response.sendRedirect("rootView.jsp");
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -187,14 +195,14 @@ public class ControlServlet extends HttpServlet {
 			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
 			 HttpSession session = request.getSession();
 			 session.setAttribute("username", username);
-			 response.sendRedirect("AccountView.jsp");
+			 response.sendRedirect("rootView.jsp");
     	 }
     	 else if(users.containsKey(username)) {
     		 if(users.get(username).equals(password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
     			 session.setAttribute("username", username);
-    			 response.sendRedirect("AccountView.jsp");				//redirect our user to accountview
+    			 response.sendRedirect("accountView.jsp");				//redirect our user to accountview
     		 }
     		 else {
     			 System.out.println("Invalid Password");
@@ -206,6 +214,29 @@ public class ControlServlet extends HttpServlet {
     }
     
     private void register(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
-    	
+    	String username = request.getParameter("username");
+   	 	String firstName = request.getParameter("firstName");
+   	 	String lastName = request.getParameter("lastName");
+   	 	String birthday = request.getParameter("birthday");
+   	 	String gender = request.getParameter("gender");
+   	 	String password = request.getParameter("password");
+   	 	String confirm = request.getParameter("confirmation");
+   	 	
+   	 	if (password.equals(confirm)) {
+   	 		if (!accountDAO.checkEmail(username)) {
+	   	 		System.out.println("Registration Successful! Added to database, redirecting to Account View!");
+	   	 		Account account = new Account(username, firstName, lastName, password, birthday, gender);
+	   	 		accountDAO.insert(account);
+	   	 		response.sendRedirect("accountView.jsp");
+   	 		}
+	   	 	else {
+	   	 		System.out.println("Username taken, please enter new username");
+	   	 		response.sendRedirect("register.jsp");
+	   	 	}
+   	 	}
+   	 	else {
+   	 		System.out.println("Password and Password Confirmation do not match");
+   	 		response.sendRedirect("register.jsp");
+   	 	}
     }
 }

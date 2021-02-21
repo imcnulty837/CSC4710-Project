@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Servlet implementation class Connect
  */
-@WebServlet("/PeopleDAO")
+@WebServlet("/AccountDAO")
 public class AccountDAO {     
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
@@ -33,8 +33,8 @@ public class AccountDAO {
 	private ResultSet resultSet = null;
 	
 	
-	public AccountDAO() {
-
+	public AccountDAO(){
+		
     }
 	       
     /**
@@ -52,6 +52,39 @@ public class AccountDAO {
   			          + "useSSL=false&user=john&password=john1234");
             System.out.println(connect);
         }
+    }
+    
+    // I created this so I can actually work with the different functions in AccountDAO
+    // Also so I can actually register new users
+    // Still need to implement it so we can create every table necessary
+    public void initialize() throws SQLException{
+    	connect_func();
+    	statement = (Statement) connect.createStatement();
+    	String dropUser = "DROP TABLE IF EXISTS User";
+        String createUser = "CREATE TABLE User(" +
+        					"email VARCHAR(32) NOT NULL," +
+        					"firstName VARCHAR(20)," +
+        					"lastName VARCHAR(20)," +
+        					"password VARCHAR(20)," +
+        					"birthday DATE," +
+        					"gender VARCHAR(10)," +
+        					"PRIMARY KEY (email)" +
+        					");";
+        
+		//String insertUser = "insert into User(email, firstName, lastName, password, birthday, gender) values (?,?,?,?,?,?)";
+		
+		// Creates User table
+		statement.executeUpdate(dropUser);
+		statement.executeUpdate(createUser);
+		
+		// Need to add 8 more default tuples for part 2
+		Account account1 = new Account("john1234@gmail.com", "John", "Smith",
+				  "john1234", "1999-02-20", "male");
+		insert(account1);
+		Account account2 = new Account("jane5678@gmail.com", "Jane", "Doe",
+				  "jane5678", "1969-04-20", "female");
+		insert(account2);
+		
     }
     
     public List<Account> listAllPeople() throws SQLException {
@@ -84,7 +117,7 @@ public class AccountDAO {
         }
     }
          
-    public boolean insert(Account people) throws SQLException {
+    public void insert(Account people) throws SQLException {
     	connect_func();         
 		String sql = "insert into User(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
@@ -96,10 +129,11 @@ public class AccountDAO {
 		preparedStatement.setString(6, people.gender);
 //		preparedStatement.executeUpdate();
 		
-        boolean rowInserted = preparedStatement.executeUpdate() > 0;
+        //boolean rowInserted = preparedStatement.executeUpdate() > 0;
+		preparedStatement.executeUpdate();
         preparedStatement.close();
 //        disconnect();
-        return rowInserted;
+        //return rowInserted;
     }     
      
     public boolean delete(String email) throws SQLException {
@@ -132,9 +166,28 @@ public class AccountDAO {
 //        disconnect();
         return rowUpdated;     
     }
+    
+    public boolean checkEmail(String email) throws SQLException {
+    	boolean torf = false;
+    	String sql = "SELECT * FROM User WHERE email = ?";
+    	connect_func();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        System.out.println(torf);	
+        
+        if (resultSet.next()) {
+        	torf = true;
+        }
+        
+        System.out.println(torf);
+    
+    	return torf;
+    }
 	
     public Account getPeople(String email) throws SQLException {
-    	Account people = null;
+    	Account account = null;
         String sql = "SELECT * FROM User WHERE email = ?";
          
         connect_func();
@@ -151,12 +204,12 @@ public class AccountDAO {
             String birthday = resultSet.getString("birthday");
             String gender = resultSet.getString("gender");
              
-            people = new Account(email, firstName, lastName, password, birthday,gender);
+            account = new Account(email, firstName, lastName, password, birthday,gender);
         }
          
         resultSet.close();
         statement.close();
          
-        return people;
+        return account;
     }
 }
