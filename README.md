@@ -1,2 +1,2 @@
 # CSC4710-Project
-Authors: Nicholas Foster, Ian McNulty
+Authors: Nicholas Foster HB7798, Ian McNulty GI5631
