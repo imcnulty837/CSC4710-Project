@@ -29,11 +29,11 @@ import java.sql.PreparedStatement;
  */
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private PeopleDAO peopleDAO;
+    private AccountDAO accountDAO;
     TreeMap<String, String> users;
  
     public void init() {
-        //peopleDAO = new PeopleDAO(); 
+        accountDAO = new AccountDAO(); 
         
         //initialize our TreeMap users containing our webpage users login data
         users = new TreeMap<String,String>();
@@ -108,7 +108,7 @@ public class ControlServlet extends HttpServlet {
 
     private void listPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<People> listPeople = peopleDAO.listAllPeople();
+        List<Account> listPeople = accountDAO.listAllPeople();
         request.setAttribute("listPeople", listPeople);       
         RequestDispatcher dispatcher = request.getRequestDispatcher("PeopleList.jsp");       
         dispatcher.forward(request, response);
@@ -124,8 +124,8 @@ public class ControlServlet extends HttpServlet {
     // to present an update form to update an  existing Student
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        People existingPeople = peopleDAO.getPeople(id);
+        String email = request.getParameter("email");
+        Account existingPeople = accountDAO.getPeople(email);
         RequestDispatcher dispatcher = request.getRequestDispatcher("EditPeopleForm.jsp");
         request.setAttribute("people", existingPeople);
         dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
@@ -136,35 +136,40 @@ public class ControlServlet extends HttpServlet {
     // 
     private void insertPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String status = request.getParameter("status");
-        People newPeople = new People(name, address, status);
-        peopleDAO.insert(newPeople);
+        String email = request.getParameter("email");
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String password = request.getParameter("password");
+        String birthday = request.getParameter("birthday");
+        String gender = request.getParameter("gender");
+        Account newAccount = new Account(email, firstName, lastName, password, birthday, gender);
+        accountDAO.insert(newAccount);
         response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
     }
  
     private void updatePeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        String email = request.getParameter("email");
         
-        System.out.println(id);
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String status = request.getParameter("status");
+        System.out.println(email);
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String password = request.getParameter("password");
+        String birthday = request.getParameter("birthday");
+        String gender = request.getParameter("gender");
         
-        System.out.println(name);
+        System.out.println(firstName);
         
-        People people = new People(id,name, address, status);
-        peopleDAO.update(people);
+        Account account = new Account(email, firstName, lastName, password, birthday, gender);
+        accountDAO.update(account);
         response.sendRedirect("list");
     }
  
     private void deletePeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        String email = request.getParameter("id");
         //People people = new People(id);
-        peopleDAO.delete(id);
+        accountDAO.delete(email);
         response.sendRedirect("list"); 
     }
    
@@ -188,5 +193,9 @@ public class ControlServlet extends HttpServlet {
     	 else {
     		 System.out.println("The specified user does not exist");
     	 }
+    }
+    
+    private void register(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+    	
     }
 }

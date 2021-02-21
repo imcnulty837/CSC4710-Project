@@ -21,9 +21,10 @@
 					<td> 
 						<input type="password" name="password" size="45">
 					</td>
+				</tr>
 				<tr>
 					<td colspan="2" align="center">
-						<input type="submit" value="login"/>
+						<input type="submit" value="Login"/>
 					</td>
 				</tr>
 			</table>

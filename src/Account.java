@@ -1,58 +1,79 @@
+// Originally the people class, this is now the account class
+// We can use this to manage account data within our code 
 
-
-public class People {
-    protected int id;
-    protected String name;
-    protected String address;
-    protected String status;
+public class Account {
+    protected String email;
+    protected String firstName;
+    protected String lastName;
+    protected String password;
+    protected String birthday;
+    protected String gender;
  
-    public People() {
+    public Account() {
     }
  
-    public People(int id) {
-        this.id = id;
+    public Account(String email) {
+        this.email = email;
     }
  
-    public People(int id, String name, String address, String status) {
-        this(name, address, status);
-        this.id = id;
+    public Account(String email, String firstName, String lastName, String password) {
+        this(firstName, lastName, password);
+        this.email = email;
     }
      
-    public People(String name, String address, String status) {
-        this.name = name;
-        this.address = address;
-        this.status = status;
+    public Account(String firstName, String lastName, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
+    
+    public Account(String email, String firstName, String lastName, String password, String birthday) {
+        this(firstName, lastName, password);
+        this.email = email;
+        this.birthday = birthday;
+    }
+    
+    public Account(String email, String firstName, String lastName, String password, String birthday, String gender) {
+        this(firstName, lastName, password);
+        this.email = email;
+        this.birthday = birthday;
+        this.gender = gender;
     }
  
-    public int getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
- 
-    public void setId(int id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
     }
- 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
- 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
- 
-    public String getAddress() {
-        return address;
+    public String getLastName() {
+        return lastName;
     }
- 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
- 
-    public String getStatus() {
-        return status;
+    public String getPassword() {
+        return password;
     }
- 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getBirthday() {
+    	return birthday;
+    }
+    public void setBirthday(String birthday) {
+    	this.birthday = birthday;
+    }
+    public String getGender() {
+    	return gender;
+    }
+    public void setGender(String gender) {
+    	this.gender = gender;
     }
 }

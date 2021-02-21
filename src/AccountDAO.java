@@ -1,3 +1,5 @@
+// Originally the PeopleDAO class, updated to manage the Account class
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
@@ -23,7 +25,7 @@ import java.util.List;
  * Servlet implementation class Connect
  */
 @WebServlet("/PeopleDAO")
-public class PeopleDAO {     
+public class AccountDAO {     
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
@@ -31,7 +33,7 @@ public class PeopleDAO {
 	private ResultSet resultSet = null;
 	
 	
-	public PeopleDAO() {
+	public AccountDAO() {
 
     }
 	       
@@ -52,20 +54,22 @@ public class PeopleDAO {
         }
     }
     
-    public List<People> listAllPeople() throws SQLException {
-        List<People> listPeople = new ArrayList<People>();        
+    public List<Account> listAllPeople() throws SQLException {
+        List<Account> listPeople = new ArrayList<Account>();        
         String sql = "SELECT * FROM student";      
         connect_func();      
         statement =  (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
          
         while (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String address = resultSet.getString("address");
-            String status = resultSet.getString("status");
+            String email = resultSet.getString("email");
+            String firstName = resultSet.getString("firstName");
+            String lastName = resultSet.getString("lastName");
+            String password = resultSet.getString("password");
+            String birthday = resultSet.getString("birthday");
+            String gender = resultSet.getString("gender");
              
-            People people = new People(id,name, address, status);
+            Account people = new Account(email,firstName, lastName, password, birthday,gender);
             listPeople.add(people);
         }        
         resultSet.close();
@@ -80,13 +84,16 @@ public class PeopleDAO {
         }
     }
          
-    public boolean insert(People people) throws SQLException {
+    public boolean insert(Account people) throws SQLException {
     	connect_func();         
-		String sql = "insert into  student(Name, Address, Status) values (?, ?, ?)";
+		String sql = "insert into student(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setString(1, people.name);
-		preparedStatement.setString(2, people.address);
-		preparedStatement.setString(3, people.status);
+		preparedStatement.setString(1, people.email);
+		preparedStatement.setString(2, people.firstName);
+		preparedStatement.setString(3, people.lastName);
+		preparedStatement.setString(4, people.password);
+		preparedStatement.setString(5, people.birthday);
+		preparedStatement.setString(6, people.gender);
 //		preparedStatement.executeUpdate();
 		
         boolean rowInserted = preparedStatement.executeUpdate() > 0;
@@ -95,12 +102,12 @@ public class PeopleDAO {
         return rowInserted;
     }     
      
-    public boolean delete(int peopleid) throws SQLException {
-        String sql = "DELETE FROM student WHERE id = ?";        
+    public boolean delete(String email) throws SQLException {
+        String sql = "DELETE FROM student WHERE email = ?";        
         connect_func();
          
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setInt(1, peopleid);
+        preparedStatement.setString(1, email);
          
         boolean rowDeleted = preparedStatement.executeUpdate() > 0;
         preparedStatement.close();
@@ -108,15 +115,17 @@ public class PeopleDAO {
         return rowDeleted;     
     }
      
-    public boolean update(People people) throws SQLException {
-        String sql = "update student set Name=?, Address =?,Status = ? where id = ?";
+    public boolean update(Account people) throws SQLException {
+        String sql = "update student set firstName=?, lastName =?,password = ?,birthday=?, gender=? where email = ?";
         connect_func();
         
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, people.name);
-        preparedStatement.setString(2, people.address);
-        preparedStatement.setString(3, people.status);
-        preparedStatement.setInt(4, people.id);
+        preparedStatement.setString(1, people.firstName);
+        preparedStatement.setString(2, people.lastName);
+        preparedStatement.setString(3, people.password);
+        preparedStatement.setString(4, people.birthday);
+        preparedStatement.setString(5, people.gender);
+        preparedStatement.setString(6, people.email);
          
         boolean rowUpdated = preparedStatement.executeUpdate() > 0;
         preparedStatement.close();
@@ -124,23 +133,25 @@ public class PeopleDAO {
         return rowUpdated;     
     }
 	
-    public People getPeople(int id) throws SQLException {
-    	People people = null;
-        String sql = "SELECT * FROM student WHERE id = ?";
+    public Account getPeople(String email) throws SQLException {
+    	Account people = null;
+        String sql = "SELECT * FROM student WHERE email = ?";
          
         connect_func();
          
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, email);
          
         ResultSet resultSet = preparedStatement.executeQuery();
          
         if (resultSet.next()) {
-            String name = resultSet.getString("name");
-            String address = resultSet.getString("address");
-            String status = resultSet.getString("status");
+            String firstName = resultSet.getString("firstName");
+            String lastName = resultSet.getString("lastName");
+            String password = resultSet.getString("password");
+            String birthday = resultSet.getString("birthday");
+            String gender = resultSet.getString("gender");
              
-            people = new People(id, name, address, status);
+            people = new Account(email, firstName, lastName, password, birthday,gender);
         }
          
         resultSet.close();

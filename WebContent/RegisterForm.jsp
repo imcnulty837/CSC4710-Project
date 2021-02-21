@@ -16,19 +16,30 @@
 				<tr>
 					<th>First Name: </th>
 					<td>
-						<input type="text" name="firstname" size="45">
+						<input type="text" name="firstName" size="45">
 					</td>
 				</tr>
 				<tr>
 					<th>Last Name: </th>
 					<td>
-						<input type="text" name="lastname" size="45">
+						<input type="text" name="lastName" size="45">
 					</td>
 				</tr>
 				<tr>
-					<th>Age: </th>
+					<th>Birthday: </th>
 					<td>
-						<input type="number" name="age" size="45">
+						<input type="text" name="birthday" size="45">
+					</td>
+				</tr>
+				<tr>
+					<th class="select" align="center">Gender:
+					</th>
+					<td align="center">
+						<select>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="other">Other</option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -43,14 +54,14 @@
 						<input type="text" name="confirmation" size="45">
 					</td>
 				</tr>
-			</table>
-			<table>
-				<th>
-					<a href="AccountView.jsp" target="_self">Register</a>
-				</th>
-				<th>
-					<a href="login.jsp" target="_self">Return to Login Page</a>
-				</th>
+				<tr>
+					<td align="center">
+						<a href="login.jsp" target="_self">Return to Login Page</a>
+					</td>
+					<td align="center">
+						<a href="AccountView.jsp" target="_self">Register</a>
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>
