@@ -30,35 +30,12 @@ import java.sql.PreparedStatement;
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
-    TreeMap<String, String> users;
+    
  
     public void init() {
         accountDAO = new AccountDAO(); 
-        
-        //initialize our TreeMap users containing our webpage users login data
-        //users = new TreeMap<String,String>();
-        //populateUsers();
     }
     
-    public void populateUsers() {
-    	/*
-    	//reads the loginData file and inserts all webpage users into a TreeMap
-    	try {
-    		File loginData = new File("CSC4710-Project\\src\\LoginData");
-    		Scanner reader = new Scanner(loginData);
-    		while(reader.hasNextLine()) {
-    			String[] data = reader.nextLine().split("\t");
-    			users.put(data[0], data[1]);
-    		}
-    		reader.close();
-    	}
-    	catch(FileNotFoundException e) {
-    		System.out.println("failed to read login data file.");
-    		e.printStackTrace();
-    	}
-    	*/
-    }
- 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
@@ -183,13 +160,11 @@ public class ControlServlet extends HttpServlet {
         response.sendRedirect("list"); 
     }
    
-    private void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	//get parameters from our login.jsp textboxes
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
     	 
-    	 System.out.println(username);
-    	 System.out.println(password);
     	 //simple if to compare the textbox contents with our users treemap
     	 if (username.equals("root") && password.equals("root1234")) {
 			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
@@ -197,19 +172,14 @@ public class ControlServlet extends HttpServlet {
 			 session.setAttribute("username", username);
 			 response.sendRedirect("rootView.jsp");
     	 }
-    	 else if(users.containsKey(username)) {
-    		 if(users.get(username).equals(password)) {
+    	 else if(accountDAO.dbLogin(username,password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
     			 session.setAttribute("username", username);
     			 response.sendRedirect("accountView.jsp");				//redirect our user to accountview
-    		 }
-    		 else {
-    			 System.out.println("Invalid Password");
-    		 }
     	 }
     	 else {
-    		 System.out.println("The specified user does not exist");
+    		 System.out.println("Failed Login");
     	 }
     }
     
