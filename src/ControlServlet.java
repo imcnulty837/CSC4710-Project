@@ -29,21 +29,22 @@ import java.sql.PreparedStatement;
  */
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private PeopleDAO peopleDAO;
+    private AccountDAO accountDAO;
     TreeMap<String, String> users;
  
     public void init() {
-        //peopleDAO = new PeopleDAO(); 
+        accountDAO = new AccountDAO(); 
         
         //initialize our TreeMap users containing our webpage users login data
-        users = new TreeMap<String,String>();
-        populateUsers();
+        //users = new TreeMap<String,String>();
+        //populateUsers();
     }
     
     public void populateUsers() {
+    	/*
     	//reads the loginData file and inserts all webpage users into a TreeMap
     	try {
-    		File loginData = new File("C:\\Users\\Vulcan\\git\\CSC4710-Project\\src\\LoginData");
+    		File loginData = new File("CSC4710-Project\\src\\LoginData");
     		Scanner reader = new Scanner(loginData);
     		while(reader.hasNextLine()) {
     			String[] data = reader.nextLine().split("\t");
@@ -55,6 +56,7 @@ public class ControlServlet extends HttpServlet {
     		System.out.println("failed to read login data file.");
     		e.printStackTrace();
     	}
+    	*/
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -72,6 +74,14 @@ public class ControlServlet extends HttpServlet {
         	case "/login":
         		 //When a login attempt occurs in login.jsp, it passes through doGet then calls our login function below
         		login(request,response);
+        		break;
+        	case "/register":
+        		register(request, response);
+        		break;
+        	case "/initialize":
+        		accountDAO.initialize();
+        		System.out.println("Database successfully initialized!");
+        		response.sendRedirect("rootView.jsp");
         		break;
         	}
         }
@@ -108,7 +118,7 @@ public class ControlServlet extends HttpServlet {
 
     private void listPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<People> listPeople = peopleDAO.listAllPeople();
+        List<Account> listPeople = accountDAO.listAllPeople();
         request.setAttribute("listPeople", listPeople);       
         RequestDispatcher dispatcher = request.getRequestDispatcher("PeopleList.jsp");       
         dispatcher.forward(request, response);
@@ -124,8 +134,8 @@ public class ControlServlet extends HttpServlet {
     // to present an update form to update an  existing Student
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        People existingPeople = peopleDAO.getPeople(id);
+        String email = request.getParameter("email");
+        Account existingPeople = accountDAO.getPeople(email);
         RequestDispatcher dispatcher = request.getRequestDispatcher("EditPeopleForm.jsp");
         request.setAttribute("people", existingPeople);
         dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
@@ -136,35 +146,40 @@ public class ControlServlet extends HttpServlet {
     // 
     private void insertPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String status = request.getParameter("status");
-        People newPeople = new People(name, address, status);
-        peopleDAO.insert(newPeople);
+        String email = request.getParameter("email");
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String password = request.getParameter("password");
+        String birthday = request.getParameter("birthday");
+        String gender = request.getParameter("gender");
+        Account newAccount = new Account(email, firstName, lastName, password, birthday, gender);
+        accountDAO.insert(newAccount);
         response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
     }
  
     private void updatePeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        String email = request.getParameter("email");
         
-        System.out.println(id);
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String status = request.getParameter("status");
+        System.out.println(email);
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String password = request.getParameter("password");
+        String birthday = request.getParameter("birthday");
+        String gender = request.getParameter("gender");
         
-        System.out.println(name);
+        System.out.println(firstName);
         
-        People people = new People(id,name, address, status);
-        peopleDAO.update(people);
+        Account account = new Account(email, firstName, lastName, password, birthday, gender);
+        accountDAO.update(account);
         response.sendRedirect("list");
     }
  
     private void deletePeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        String email = request.getParameter("id");
         //People people = new People(id);
-        peopleDAO.delete(id);
+        accountDAO.delete(email);
         response.sendRedirect("list"); 
     }
    
@@ -173,13 +188,21 @@ public class ControlServlet extends HttpServlet {
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
     	 
+    	 System.out.println(username);
+    	 System.out.println(password);
     	 //simple if to compare the textbox contents with our users treemap
-    	 if(users.containsKey(username)) {
+    	 if (username.equals("root") && password.equals("root1234")) {
+			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
+			 HttpSession session = request.getSession();
+			 session.setAttribute("username", username);
+			 response.sendRedirect("rootView.jsp");
+    	 }
+    	 else if(users.containsKey(username)) {
     		 if(users.get(username).equals(password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
     			 session.setAttribute("username", username);
-    			 response.sendRedirect("AccountView");				//redirect our user to accountview
+    			 response.sendRedirect("accountView.jsp");				//redirect our user to accountview
     		 }
     		 else {
     			 System.out.println("Invalid Password");
@@ -188,5 +211,32 @@ public class ControlServlet extends HttpServlet {
     	 else {
     		 System.out.println("The specified user does not exist");
     	 }
+    }
+    
+    private void register(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+    	String username = request.getParameter("username");
+   	 	String firstName = request.getParameter("firstName");
+   	 	String lastName = request.getParameter("lastName");
+   	 	String birthday = request.getParameter("birthday");
+   	 	String gender = request.getParameter("gender");
+   	 	String password = request.getParameter("password");
+   	 	String confirm = request.getParameter("confirmation");
+   	 	
+   	 	if (password.equals(confirm)) {
+   	 		if (!accountDAO.checkEmail(username)) {
+	   	 		System.out.println("Registration Successful! Added to database, redirecting to Account View!");
+	   	 		Account account = new Account(username, firstName, lastName, password, birthday, gender);
+	   	 		accountDAO.insert(account);
+	   	 		response.sendRedirect("accountView.jsp");
+   	 		}
+	   	 	else {
+	   	 		System.out.println("Username taken, please enter new username");
+	   	 		response.sendRedirect("register.jsp");
+	   	 	}
+   	 	}
+   	 	else {
+   	 		System.out.println("Password and Password Confirmation do not match");
+   	 		response.sendRedirect("register.jsp");
+   	 	}
     }
 }

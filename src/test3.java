@@ -152,7 +152,7 @@ public static void main(String[] args) {
                    " PRIMARY KEY ( id ))"; 
     String sql3a = "insert into Student(id, Name, Address, Status) values (?, ?, ?, ?)";
     String sql3b = "insert into Student(id, Name, Address, Status) values (?, ?, ?, ?)";
-    String sql3c = "insert into  Student(id, Name, Address, Status) values (?, ?, ?, ?)";
+    String sql3c = "insert into Student(id, Name, Address, Status) values (?, ?, ?, ?)";
     String sql4 = "insert into Student(id, Name, Address, Status) values (999999999, \"Bill\", \"432 Pine\", \"senior\")";
     String sql5 = "UPDATE Student SET Status=\"soph\" WHERE id=111111111";
     String sql6 = "DELETE FROM Student WHERE id=111111111";

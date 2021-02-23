@@ -21,20 +21,14 @@
 					<td> 
 						<input type="password" name="password" size="45">
 					</td>
+				</tr>
 				<tr>
 					<td colspan="2" align="center">
-						<input type="submit" value="login"/>
+						<input type="submit" value="Login"/>
 					</td>
 				</tr>
 			</table>
-			<table> 
-				<th>
-					<a href="AccountView.jsp" target="_self">Login</a>
-				</th>
-				<th>
-					<a href="RegisterForm.jsp" target="_self">Register Here</a>
-				</th>
-			</table>
+			<a href="register.jsp" target="_self">Register Here</a>
 		</form>
 	</div>
 </body>

@@ -4,8 +4,9 @@
 <html>
 <head><title>Account Page</title></head>
 <body>
-<div>
-<p>This is a page for testing links so we do not cause 404 errors every time we click a button</p>
-</div>
+	<div align="center">
+		<h1>Welcome user!</h1>
+		<a href="login.jsp" target="_self">Logout</a>
+	</div>
 </body>
 </html>
