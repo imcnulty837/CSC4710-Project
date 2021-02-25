@@ -1,5 +1,7 @@
 // Originally the PeopleDAO class, updated to manage the Account class
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
@@ -21,6 +23,7 @@ import java.sql.ResultSet;
 //import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 /**
  * Servlet implementation class Connect
  */
@@ -36,11 +39,12 @@ public class AccountDAO {
 	public AccountDAO(){
 		
     }
-	       
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
     protected void connect_func() throws SQLException {
+    	//uses default connection to the database
         if (connect == null || connect.isClosed()) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -54,11 +58,55 @@ public class AccountDAO {
         }
     }
     
+    public boolean dbLogin(String username, String password) {
+    	try {
+    		connect_func();
+    	}
+    	catch(SQLException e) {
+    		System.out.println("failed login");
+    		return false;
+    	}
+    	return true;
+    }
+    
+    public void connect_func(String username, String password) throws SQLException {
+    	//connect to the database using a specified username and password
+        if (connect == null || connect.isClosed()) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                throw new SQLException(e);
+            }
+            connect = (Connection) DriverManager
+  			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
+  			          + "useSSL=false&user=" + username + "&password=" + password);
+            System.out.println(connect);
+        }
+    }
+
     // I created this so I can actually work with the different functions in AccountDAO
     // Also so I can actually register new users
     // Still need to implement it so we can create every table necessary
-    public void initialize() throws SQLException{
-    	connect_func();
+    public void initialize() throws SQLException, FileNotFoundException{
+    	//connect to sql database root user
+    	connect_func("root","root1234");
+    	
+    	//read our database init file
+    	File dbInit = new File("CSC4710-Project\\src\\databaseInit.sql");
+		Scanner reader = new Scanner(dbInit);
+		String initScript = null;
+		while(reader.hasNextLine()) {
+			initScript += reader.nextLine();
+		}
+		
+		//execute our database init sql file
+		statement = (Statement) connect.createStatement();
+		//execute our script
+		statement.execute(initScript);
+		
+		//close our root connection and reader
+		reader.close();
+    	/*
     	statement = (Statement) connect.createStatement();
     	String dropUser = "DROP TABLE IF EXISTS User";
         String createUser = "CREATE TABLE User(" +
@@ -72,19 +120,16 @@ public class AccountDAO {
         					");";
         
 		//String insertUser = "insert into User(email, firstName, lastName, password, birthday, gender) values (?,?,?,?,?,?)";
-		
-		// Creates User table
-		statement.executeUpdate(dropUser);
-		statement.executeUpdate(createUser);
-		
+		*/
 		// Need to add 8 more default tuples for part 2
+		//insert predetermined accounts into the database
 		Account account1 = new Account("john1234@gmail.com", "John", "Smith",
 				  "john1234", "1999-02-20", "male");
 		insert(account1);
 		Account account2 = new Account("jane5678@gmail.com", "Jane", "Doe",
 				  "jane5678", "1969-04-20", "female");
 		insert(account2);
-		
+		disconnect();
     }
     
     public List<Account> listAllPeople() throws SQLException {
