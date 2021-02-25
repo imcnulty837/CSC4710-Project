@@ -46,4 +46,4 @@ insert into ImageTag(imageId, tagId)
 	values (1,1);
 	
 insert into likes(email, imageId, likeSwitch)
-	values ("john1234",1,true);
+	values ("john1234@gmail.com",1,true);

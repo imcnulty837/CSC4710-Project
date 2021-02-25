@@ -1,3 +1,4 @@
+package javaPkg;
 // Originally the PeopleDAO class, updated to manage the Account class
 
 import java.io.File;
@@ -84,51 +85,34 @@ public class AccountDAO {
         }
     }
 
-    // I created this so I can actually work with the different functions in AccountDAO
-    // Also so I can actually register new users
-    // Still need to implement it so we can create every table necessary
-    public void initialize() throws SQLException, FileNotFoundException{
-    	//connect to sql database root user
-    	connect_func("root","root1234");
+    public void initialize() throws SQLException, FileNotFoundException{ 	
+    	//initialize our database with our predefined sql scripts
+    	//for whatever reason i cant seem to get this to behave with anything other than absolute paths...its really pissing me off.
+    	batchSqlExecuter("C:\Users\17342\git\CSC4710-Project\src\sqlPkg\databaseInit.sql", "root","root1234");
+    	batchSqlExecuter("C:\\Users\\17342\\git\\CSC4710-Project\\src\\sqlPkg\\populateTables.sql","root","root1234");
+    }
+    
+    public void batchSqlExecuter(String file,String user, String password) throws SQLException, FileNotFoundException{
+    	//Connect to database
+    	connect_func(user, password);
     	
-    	//read our database init file
-    	File dbInit = new File("CSC4710-Project\\src\\databaseInit.sql");
-		Scanner reader = new Scanner(dbInit);
-		String initScript = null;
+    	//set our file and scan it
+    	File script = new File(file);
+		Scanner reader = new Scanner(script);
+		String initScript = "";
 		while(reader.hasNextLine()) {
 			initScript += reader.nextLine();
 		}
 		
-		//execute our database init sql file
-		statement = (Statement) connect.createStatement();
-		//execute our script
-		statement.execute(initScript);
+		//break our script into a string array using ; as a delimeter
+		String[] sqlCalls = initScript.split(";");
 		
-		//close our root connection and reader
+		for(int x=0; x < sqlCalls.length; x++) {
+			statement = (Statement) connect.createStatement();
+			statement.execute(sqlCalls[x] + ";");
+		}
+		
 		reader.close();
-    	/*
-    	statement = (Statement) connect.createStatement();
-    	String dropUser = "DROP TABLE IF EXISTS User";
-        String createUser = "CREATE TABLE User(" +
-        					"email VARCHAR(32) NOT NULL," +
-        					"firstName VARCHAR(20)," +
-        					"lastName VARCHAR(20)," +
-        					"password VARCHAR(20)," +
-        					"birthday DATE," +
-        					"gender VARCHAR(10)," +
-        					"PRIMARY KEY (email)" +
-        					");";
-        
-		//String insertUser = "insert into User(email, firstName, lastName, password, birthday, gender) values (?,?,?,?,?,?)";
-		*/
-		// Need to add 8 more default tuples for part 2
-		//insert predetermined accounts into the database
-		Account account1 = new Account("john1234@gmail.com", "John", "Smith",
-				  "john1234", "1999-02-20", "male");
-		insert(account1);
-		Account account2 = new Account("jane5678@gmail.com", "Jane", "Doe",
-				  "jane5678", "1969-04-20", "female");
-		insert(account2);
 		disconnect();
     }
     

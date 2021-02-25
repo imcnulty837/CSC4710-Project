@@ -33,7 +33,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>ControllerServlet</servlet-name>
-    <servlet-class>ControlServlet</servlet-class>
+    <servlet-class>javaPkg.ControlServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ControllerServlet</servlet-name>

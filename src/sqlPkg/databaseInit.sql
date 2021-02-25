@@ -1,4 +1,5 @@
 drop database if exists testdb;
+
 create database testdb;
 use testdb;
 
@@ -34,8 +35,8 @@ create table follows(
     followeeEmail VARCHAR(32) not null,
     FOREIGN KEY (followerEmail) References User(email),
     FOREIGN KEY (followeeEmail) References User(email),
-    Primary key (followerEmail, followeeEmail)
-    constraint self_follow check FollowerEmail <> FolloweeEmail
+    Primary key (followerEmail, followeeEmail),
+    constraint self_follow check (FollowerEmail <> FolloweeEmail)
 );
 
 Create Table Comments(
@@ -56,7 +57,7 @@ create table ImageTag(
 );
 
 create table likes(
-	Email  varchar(32),
+	email  varchar(32),
     imageId integer,
     likeSwitch boolean,
     Foreign key (email) references user(email),

@@ -1,3 +1,4 @@
+package javaPkg;
 
 public class Image {
 	protected String url;

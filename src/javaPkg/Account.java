@@ -1,3 +1,4 @@
+package javaPkg;
 // Originally the people class, this is now the account class
 // We can use this to manage account data within our code 
 

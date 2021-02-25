@@ -1,3 +1,4 @@
+package javaPkg;
 
 public class Tag {
 	String tag;
