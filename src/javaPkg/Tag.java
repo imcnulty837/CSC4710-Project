@@ -1,7 +1,9 @@
 package javaPkg;
 
+import java.lang.String;
+
 public class Tag {
-	String tag;
+	protected String tag;
 	
 	public Tag(String tag) {
 		this.tag = tag;
