@@ -78,6 +78,6 @@ insert into likes(email, imageId, likeSwitch)
 			("jane5678@gmail.com",3,true),
 			("jingle444@gmail.com",4,true),
 			("test@gmail.com",4,true),
-			("jingle444@gmail.com",4,true),
+			("jingle444@gmail.com",5,true),
 			("jane5678@gmail.com",4,true),
 			("john1234@gmail.com",5,true);

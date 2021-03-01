@@ -90,9 +90,9 @@ public class AccountDAO {
     	//System.out.println(f.getAbsolutePath());
     	//File g=new File("populateTables.txt");
     	//System.out.println(g.getAbsolutePath());
-    	//batchSqlExecuter("databaseInit.txt");
-    	//batchSqlExecuter("populateTables.txt");
-    	
+    	batchSqlExecuter("sqlPkg/databaseInit.sql");
+    	batchSqlExecuter("sqlPkg/populateTables.sql");
+    	/**
     	connect_func();
         statement =  (Statement) connect.createStatement();
         
@@ -245,6 +245,7 @@ public class AccountDAO {
         for (int i = 0; i < FAKETUPLES.length; i++)	
         	statement.execute(FAKETUPLES[i]);
         disconnect();
+        **/
 
     }
     
