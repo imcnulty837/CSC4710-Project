@@ -1,16 +1,22 @@
-drop database if exists testdb;
-
-create database testdb;
+create database if not exists testdb;
 use testdb;
 
+
+drop table if exists ImageTag;
+drop table if exists likes;
+drop table if exists follows;
+drop table if exists Comments;
+drop table if exists Image;
 drop table if exists User;
+drop table if exists tags;
+
 CREATE TABLE if not exists User(
     email VARCHAR(32) NOT NULL,
     firstName VARCHAR(20) NOT NULL,
     lastName VARCHAR(20) NOT NULL,
-    gender VARCHAR(10) NOT NULL,
     password VARCHAR(20) NOT NULL,
     birthday DATE NOT NULL,
+    gender VARCHAR(10) NOT NULL,
     PRIMARY KEY (email)
 );
 
@@ -25,7 +31,6 @@ CREATE TABLE if not exists Image(
     PRIMARY KEY (imageId)
 );
 
-drop table if exists tags;
 create table if not exists tags(
 	tagId integer NOT NULL auto_increment,
     tag varchar(16),
@@ -33,7 +38,6 @@ create table if not exists tags(
     constraint check_lowercase check (lower(tag) = tag)
 );
 
-drop table if exists follows;
 create table if not exists follows(
 	followerEmail VARCHAR(32) not null,
     followeeEmail VARCHAR(32) not null,
@@ -43,7 +47,6 @@ create table if not exists follows(
     constraint self_follow check (FollowerEmail <> FolloweeEmail)
 );
 
-drop table if exists Comments;
 Create Table if not exists Comments(
 	imageId Integer,
     email VARCHAR(32),
@@ -53,7 +56,6 @@ Create Table if not exists Comments(
     Primary key(email,imageId)
 );
 
-drop table if exists ImageTag;
 create table if not exists ImageTag(
 	imageId Integer,
     tagId integer,
@@ -62,7 +64,6 @@ create table if not exists ImageTag(
     primary key(imageId, tagId)
 );
 
-drop table if exists likes;
 create table if not exists likes(
 	email  varchar(32),
     imageId integer,

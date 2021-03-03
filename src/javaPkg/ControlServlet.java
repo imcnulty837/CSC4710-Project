@@ -69,70 +69,8 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
-
     
-	/*
-	 * private void listPeople(HttpServletRequest request, HttpServletResponse
-	 * response) throws SQLException, IOException, ServletException { List<Account>
-	 * listPeople = accountDAO.listAllPeople(); request.setAttribute("listPeople",
-	 * listPeople); RequestDispatcher dispatcher =
-	 * request.getRequestDispatcher("PeopleList.jsp"); dispatcher.forward(request,
-	 * response); }
-	 * 
-	 * // to insert a people private void showNewForm(HttpServletRequest request,
-	 * HttpServletResponse response) throws ServletException, IOException {
-	 * RequestDispatcher dispatcher =
-	 * request.getRequestDispatcher("InsertPeopleForm.jsp");
-	 * dispatcher.forward(request, response); }
-	 * 
-	 * // to present an update form to update an existing Student private void
-	 * showEditForm(HttpServletRequest request, HttpServletResponse response) throws
-	 * SQLException, ServletException, IOException { String email =
-	 * request.getParameter("email"); Account existingPeople =
-	 * accountDAO.getPeople(email); RequestDispatcher dispatcher =
-	 * request.getRequestDispatcher("EditPeopleForm.jsp");
-	 * request.setAttribute("people", existingPeople); dispatcher.forward(request,
-	 * response); // The forward() method works at server side, and It sends the
-	 * same request and response objects to another servlet.
-	 * 
-	 * }
-	 * 
-	 * // after the data of a people are inserted, this method will be called to
-	 * insert the new people into the DB // private void
-	 * insertPeople(HttpServletRequest request, HttpServletResponse response) throws
-	 * SQLException, IOException { String email = request.getParameter("email");
-	 * String firstName = request.getParameter("firstName"); String lastName =
-	 * request.getParameter("lastName"); String password =
-	 * request.getParameter("password"); String birthday =
-	 * request.getParameter("birthday"); String gender =
-	 * request.getParameter("gender"); Account newAccount = new Account(email,
-	 * firstName, lastName, password, birthday, gender);
-	 * accountDAO.insert(newAccount); response.sendRedirect("list"); // The
-	 * sendRedirect() method works at client side and sends a new request }
-	 * 
-	 * private void updatePeople(HttpServletRequest request, HttpServletResponse
-	 * response) throws SQLException, IOException { String email =
-	 * request.getParameter("email");
-	 * 
-	 * System.out.println(email); String firstName =
-	 * request.getParameter("firstName"); String lastName =
-	 * request.getParameter("lastName"); String password =
-	 * request.getParameter("password"); String birthday =
-	 * request.getParameter("birthday"); String gender =
-	 * request.getParameter("gender");
-	 * 
-	 * System.out.println(firstName);
-	 * 
-	 * Account account = new Account(email, firstName, lastName, password, birthday,
-	 * gender); accountDAO.update(account); response.sendRedirect("list"); }
-	 * 
-	 * private void deletePeople(HttpServletRequest request, HttpServletResponse
-	 * response) throws SQLException, IOException { String email =
-	 * request.getParameter("id"); //People people = new People(id);
-	 * accountDAO.delete(email); response.sendRedirect("list"); }
-	 */
-    
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	//get parameters from our login.jsp textboxes
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
@@ -153,10 +91,12 @@ public class ControlServlet extends HttpServlet {
     	 }
     	 else {
     		 System.out.println("Failed Login");
+    		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
+    		 request.getRequestDispatcher("login.jsp").forward(request, response);
     	 }
     }
     
-    private void register(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+    private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
     	String username = request.getParameter("username");
    	 	String firstName = request.getParameter("firstName");
    	 	String lastName = request.getParameter("lastName");
@@ -174,12 +114,14 @@ public class ControlServlet extends HttpServlet {
    	 		}
 	   	 	else {
 	   	 		System.out.println("Username taken, please enter new username");
-	   	 		response.sendRedirect("register.jsp");
+	    		 request.setAttribute("errorOne","Registration failed: Username taken, please enter a new username.");
+	    		 request.getRequestDispatcher("register.jsp").forward(request, response);
 	   	 	}
    	 	}
    	 	else {
    	 		System.out.println("Password and Password Confirmation do not match");
-   	 		response.sendRedirect("register.jsp");
+   		 request.setAttribute("errorTwo","Registration failed: Password and Password Confirmation do not match.");
+   		 request.getRequestDispatcher("register.jsp").forward(request, response);
    	 	}
     }
 }
