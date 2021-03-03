@@ -8,6 +8,7 @@
 </head>
 <body>
 	<div align="center">
+		<p> ${loginFailedStr} </p>
 		<form action="login" method="post">
 			<table border="1" cellpadding="5">
 				<tr>

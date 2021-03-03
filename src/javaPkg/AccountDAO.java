@@ -35,10 +35,7 @@ public class AccountDAO {
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	
-	public AccountDAO(){
-		
-    }
+	public AccountDAO(){}
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -60,7 +57,7 @@ public class AccountDAO {
     
     public boolean dbLogin(String username, String password) {
     	try {
-    		connect_func();
+    		connect_func(username, password);
     	}
     	catch(SQLException e) {
     		System.out.println("failed login");
@@ -85,13 +82,175 @@ public class AccountDAO {
     }
 
     public void initialize() throws SQLException, FileNotFoundException, IOException{ 	
-    	//initialize our database with our predefined sql scripts
-    	//File f=new File("databaseInit.txt");
-    	//System.out.println(f.getAbsolutePath());
-    	//File g=new File("populateTables.txt");
-    	//System.out.println(g.getAbsolutePath());
-    	batchSqlExecuter("sqlPkg/databaseInit.sql");
-    	batchSqlExecuter("sqlPkg/populateTables.sql");
+    	//if an error occurs here, its possible your environment doesn't have a correct path to the project
+    	//to fix: go to Run > run configurations > tomcat server > arguments
+    	//set your working directory to match the project folder
+    	batchSqlExecuter("src/sqlPkg/databaseInit.sql");
+    	batchSqlExecuter("src/sqlPkg/populateTables.sql");
+    }
+    
+    public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
+    	//this is a batch executer meant to perform management bulk-sql operations from .sql files
+    	//Connect to database
+    	connect_func("root","root1234");
+    	
+		StringBuilder initScript = new StringBuilder("");
+    	//set our file and try to scan it
+    	try {
+	    	FileReader myFile = new FileReader(file);
+	    	BufferedReader reader = new BufferedReader(myFile);
+			String line = reader.readLine();
+			while(line != null) {
+				initScript.append(line);
+				line = reader.readLine();
+			}
+			reader.close();
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    		System.out.println(e.getMessage());
+    	}
+		
+		String sqlScript = initScript.toString();
+		//break our script into a string array using ; as a delimiter
+		String[] sqlCalls = sqlScript.split(";");
+		
+		for(int x=0; x < sqlCalls.length; x++) {
+			statement = (Statement) connect.createStatement();
+			statement.execute(sqlCalls[x] + ";");
+		}
+
+		disconnect();
+    }
+    
+    public List<Account> listAllPeople() throws SQLException {
+        List<Account> listPeople = new ArrayList<Account>();        
+        String sql = "SELECT * FROM User";      
+        connect_func();      
+        statement =  (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            String firstName = resultSet.getString("firstName");
+            String lastName = resultSet.getString("lastName");
+            String password = resultSet.getString("password");
+            String birthday = resultSet.getString("birthday");
+            String gender = resultSet.getString("gender");
+             
+            Account people = new Account(email,firstName, lastName, password, birthday,gender);
+            listPeople.add(people);
+        }        
+        resultSet.close();
+        statement.close();         
+        disconnect();        
+        return listPeople;
+    }
+    
+    protected void disconnect() throws SQLException {
+        if (connect != null && !connect.isClosed()) {
+        	connect.close();
+        }
+    }
+         
+    public void insert(Account people) throws SQLException {
+    	connect_func("root","root1234");         
+		String sql = "insert into User(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setString(1, people.email);
+		preparedStatement.setString(2, people.firstName);
+		preparedStatement.setString(3, people.lastName);
+		preparedStatement.setString(4, people.password);
+		preparedStatement.setString(5, people.birthday);
+		preparedStatement.setString(6, people.gender);
+//		preparedStatement.executeUpdate();
+		
+        //boolean rowInserted = preparedStatement.executeUpdate() > 0;
+		preparedStatement.executeUpdate();
+        preparedStatement.close();
+//        disconnect();
+        //return rowInserted;
+    }     
+     
+    public boolean delete(String email) throws SQLException {
+        String sql = "DELETE FROM User WHERE email = ?";        
+        connect_func();
+         
+        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+         
+        boolean rowDeleted = preparedStatement.executeUpdate() > 0;
+        preparedStatement.close();
+//        disconnect();
+        return rowDeleted;     
+    }
+     
+    public boolean update(Account people) throws SQLException {
+        String sql = "update User set firstName=?, lastName =?,password = ?,birthday=?, gender=? where email = ?";
+        connect_func();
+        
+        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, people.firstName);
+        preparedStatement.setString(2, people.lastName);
+        preparedStatement.setString(3, people.password);
+        preparedStatement.setString(4, people.birthday);
+        preparedStatement.setString(5, people.gender);
+        preparedStatement.setString(6, people.email);
+         
+        boolean rowUpdated = preparedStatement.executeUpdate() > 0;
+        preparedStatement.close();
+//        disconnect();
+        return rowUpdated;     
+    }
+    
+    public boolean checkEmail(String email) throws SQLException {
+    	boolean torf = false;
+    	String sql = "SELECT * FROM User WHERE email = ?";
+    	connect_func("root", "root1234");
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        System.out.println(torf);	
+        
+        if (resultSet.next()) {
+        	torf = true;
+        }
+        
+        System.out.println(torf);
+    
+    	return torf;
+    }
+	
+    public Account getPeople(String email) throws SQLException {
+    	Account account = null;
+        String sql = "SELECT * FROM User WHERE email = ?";
+         
+        connect_func();
+         
+        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+         
+        ResultSet resultSet = preparedStatement.executeQuery();
+         
+        if (resultSet.next()) {
+            String firstName = resultSet.getString("firstName");
+            String lastName = resultSet.getString("lastName");
+            String password = resultSet.getString("password");
+            String birthday = resultSet.getString("birthday");
+            String gender = resultSet.getString("gender");
+             
+            account = new Account(email, firstName, lastName, password, birthday,gender);
+        }
+         
+        resultSet.close();
+        statement.close();
+         
+        return account;
+    }
+    
+    public void init_backup() throws SQLException, FileNotFoundException, IOException{
+    	//This is a backup database initialize function just in case something goes wrong with the batch executer or database initialize file.
+    	//generally this will never get called but it never hurts to have a backup plan ;D
     	/**
     	connect_func();
         statement =  (Statement) connect.createStatement();
@@ -246,165 +405,5 @@ public class AccountDAO {
         	statement.execute(FAKETUPLES[i]);
         disconnect();
         **/
-
-    }
-    
-    public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
-    	//Connect to database
-    	connect_func();
-    	
-		StringBuilder initScript = new StringBuilder("");
-    	//set our file and scan it
-    	try {
-	    	FileReader myFile = new FileReader(file);
-	    	BufferedReader reader = new BufferedReader(myFile);
-			String line = reader.readLine();
-			while(line != null) {
-				initScript.append(line);
-				line = reader.readLine();
-			}
-			reader.close();
-    	} catch(IOException e) {
-    		e.printStackTrace();
-    		System.out.println(e.getMessage());
-    	}
-		
-		String sqlScript = initScript.toString();
-		//break our script into a string array using ; as a delimiter
-		String[] sqlCalls = sqlScript.split(";");
-		
-		for(int x=0; x < sqlCalls.length; x++) {
-			statement = (Statement) connect.createStatement();
-			statement.execute(sqlCalls[x] + ";");
-		}
-		
-		
-		disconnect();
-    }
-    
-    public List<Account> listAllPeople() throws SQLException {
-        List<Account> listPeople = new ArrayList<Account>();        
-        String sql = "SELECT * FROM User";      
-        connect_func();      
-        statement =  (Statement) connect.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-         
-        while (resultSet.next()) {
-            String email = resultSet.getString("email");
-            String firstName = resultSet.getString("firstName");
-            String lastName = resultSet.getString("lastName");
-            String password = resultSet.getString("password");
-            String birthday = resultSet.getString("birthday");
-            String gender = resultSet.getString("gender");
-             
-            Account people = new Account(email,firstName, lastName, password, birthday,gender);
-            listPeople.add(people);
-        }        
-        resultSet.close();
-        statement.close();         
-        disconnect();        
-        return listPeople;
-    }
-    
-    protected void disconnect() throws SQLException {
-        if (connect != null && !connect.isClosed()) {
-        	connect.close();
-        }
-    }
-         
-    public void insert(Account people) throws SQLException {
-    	connect_func();         
-		String sql = "insert into User(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
-		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setString(1, people.email);
-		preparedStatement.setString(2, people.firstName);
-		preparedStatement.setString(3, people.lastName);
-		preparedStatement.setString(4, people.password);
-		preparedStatement.setString(5, people.birthday);
-		preparedStatement.setString(6, people.gender);
-//		preparedStatement.executeUpdate();
-		
-        //boolean rowInserted = preparedStatement.executeUpdate() > 0;
-		preparedStatement.executeUpdate();
-        preparedStatement.close();
-//        disconnect();
-        //return rowInserted;
-    }     
-     
-    public boolean delete(String email) throws SQLException {
-        String sql = "DELETE FROM User WHERE email = ?";        
-        connect_func();
-         
-        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, email);
-         
-        boolean rowDeleted = preparedStatement.executeUpdate() > 0;
-        preparedStatement.close();
-//        disconnect();
-        return rowDeleted;     
-    }
-     
-    public boolean update(Account people) throws SQLException {
-        String sql = "update User set firstName=?, lastName =?,password = ?,birthday=?, gender=? where email = ?";
-        connect_func();
-        
-        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, people.firstName);
-        preparedStatement.setString(2, people.lastName);
-        preparedStatement.setString(3, people.password);
-        preparedStatement.setString(4, people.birthday);
-        preparedStatement.setString(5, people.gender);
-        preparedStatement.setString(6, people.email);
-         
-        boolean rowUpdated = preparedStatement.executeUpdate() > 0;
-        preparedStatement.close();
-//        disconnect();
-        return rowUpdated;     
-    }
-    
-    public boolean checkEmail(String email) throws SQLException {
-    	boolean torf = false;
-    	String sql = "SELECT * FROM User WHERE email = ?";
-    	connect_func();
-    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, email);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        
-        System.out.println(torf);	
-        
-        if (resultSet.next()) {
-        	torf = true;
-        }
-        
-        System.out.println(torf);
-    
-    	return torf;
-    }
-	
-    public Account getPeople(String email) throws SQLException {
-    	Account account = null;
-        String sql = "SELECT * FROM User WHERE email = ?";
-         
-        connect_func();
-         
-        preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, email);
-         
-        ResultSet resultSet = preparedStatement.executeQuery();
-         
-        if (resultSet.next()) {
-            String firstName = resultSet.getString("firstName");
-            String lastName = resultSet.getString("lastName");
-            String password = resultSet.getString("password");
-            String birthday = resultSet.getString("birthday");
-            String gender = resultSet.getString("gender");
-             
-            account = new Account(email, firstName, lastName, password, birthday,gender);
-        }
-         
-        resultSet.close();
-        statement.close();
-         
-        return account;
     }
 }

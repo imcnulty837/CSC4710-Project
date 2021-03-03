@@ -1,3 +1,5 @@
+use testdb;
+
 insert into User(email, firstName, lastName, password, birthday, gender) 
 	values ("john1234@gmail.com", "John", "Smith", "john1234", "1999-02-20", "male"),
 		 	("jane5678@gmail.com", "Jane", "Doe","jane5678", "1969-04-20", "female"),
