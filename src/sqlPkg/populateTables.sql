@@ -36,14 +36,48 @@ insert into tags(tag)
 			
 insert into follows(followerEmail, followeeEmail)
 	values ("john1234@gmail.com", "echoOne@gmail.com"),
+			("john1234@gmail.com", "aquaforce@gmail.com"),
+			("john1234@gmail.com", "test@gmail.com"),
+			("john1234@gmail.com", "freyja111@gmail.com"),
+			("john1234@gmail.com", "bubble.Gum@gmail.com"),
+			("john1234@gmail.com", "jingle444@gmail.com"),
+			("john1234@gmail.com", "jane5678@gmail.com"),
+			("jane5678@gmail.com", "echoOne@gmail.com"),
 			("test@gmail.com","aquaforce@gmail.com"),
 			("valarie420@gmail.com","blue42@gmail.com");
 			
 insert into comments(imageId, email, comment)
-	values (1,"john1234@gmail.com","Cool pic");
+	values (1,"john1234@gmail.com","Cool pic"),
+			(1,"jane5678@gmail.com","ur so lucky!!1"),
+			(2,"john1234@gmail.com","what a pretty sunset"),
+			(3,"jingle444@gmail.com","where did you get that pic?"),
+			(4,"jane5678@gmail.com","omg its beautiful!"),
+			(4,"test@gmail.com","noice"),
+			(4,"john1234@gmail.com","Very cool!"),
+			(5,"test@gmail.com","love it"),
+			(6,"jingle444@gmail.com","kinda lame tbh"),
+			(7,"john1234@gmail.com","Pretty pic, maybe a better angle next time");
 	
 insert into ImageTag(imageId, tagId)
-	values (1,1);
+	values (1,1),
+			(1,2),
+			(1,3),
+			(2,1),
+			(3,1),
+			(3,2),
+			(4,1),
+			(5,1),
+			(6,1),
+			(7,1);
 	
 insert into likes(email, imageId, likeSwitch)
-	values ("john1234@gmail.com",1,true);
+	values ("john1234@gmail.com",1,true),
+			("jane5678@gmail.com",1,true),
+			("jingle444@gmail.com",1,true),
+			("john1234@gmail.com",2,true),
+			("jane5678@gmail.com",3,true),
+			("jingle444@gmail.com",4,true),
+			("test@gmail.com",4,true),
+			("jingle444@gmail.com",5,true),
+			("jane5678@gmail.com",4,true),
+			("john1234@gmail.com",5,true);

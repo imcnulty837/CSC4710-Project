@@ -1,8 +1,10 @@
 package javaPkg;
 // Originally the PeopleDAO class, updated to manage the Account class
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
@@ -18,10 +20,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-//import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -85,34 +84,201 @@ public class AccountDAO {
         }
     }
 
-    public void initialize() throws SQLException, FileNotFoundException{ 	
+    public void initialize() throws SQLException, FileNotFoundException, IOException{ 	
     	//initialize our database with our predefined sql scripts
-    	//for whatever reason i cant seem to get this to behave with anything other than absolute paths...its really pissing me off.
-    	batchSqlExecuter("C:\Users\17342\git\CSC4710-Project\src\sqlPkg\databaseInit.sql", "root","root1234");
-    	batchSqlExecuter("C:\\Users\\17342\\git\\CSC4710-Project\\src\\sqlPkg\\populateTables.sql","root","root1234");
+    	//File f=new File("databaseInit.txt");
+    	//System.out.println(f.getAbsolutePath());
+    	//File g=new File("populateTables.txt");
+    	//System.out.println(g.getAbsolutePath());
+    	batchSqlExecuter("sqlPkg/databaseInit.sql");
+    	batchSqlExecuter("sqlPkg/populateTables.sql");
+    	/**
+    	connect_func();
+        statement =  (Statement) connect.createStatement();
+        
+        String[] CREATION = {"drop database if exists testdb; ",
+					        "create database testdb; ",
+					        "use testdb; ",
+					        "drop table if exists User; ",
+					        ("CREATE TABLE if not exists User( " +
+					            "email VARCHAR(32) NOT NULL, " + 
+					            "firstName VARCHAR(20) NOT NULL, " +
+					            "lastName VARCHAR(20) NOT NULL, " +
+					            "gender VARCHAR(10) NOT NULL, " +
+					            "password VARCHAR(20) NOT NULL, " +
+					            "birthday DATE NOT NULL, " +
+					            "PRIMARY KEY (email) " +
+					        "); "),
+					        "drop table if exists Image; ",
+					        ("CREATE TABLE if not exists Image( " +
+					        	"imageId INTEGER NOT NULL auto_increment, " +
+					        	"ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+					        	"email Varchar(32), " +
+					            "url VARCHAR(100), " +
+					            "description VARCHAR(200), " +
+					            "foreign key (email) references user(email), " +
+					            "PRIMARY KEY (imageId) " +
+					        "); "),
+					        "drop table if exists tags; ",
+					        ("create table if not exists tags( " +
+					        	"tagId integer NOT NULL auto_increment, " +
+					            "tag varchar(16), " +
+					            "Primary key (tagId), " +
+					            "constraint check_lowercase check (lower(tag) = tag) " +
+					        "); "),
+					        "drop table if exists follows; ",
+					        ("create table if not exists follows( " +
+					        	"followerEmail VARCHAR(32) not null, " +
+					            "followeeEmail VARCHAR(32) not null, " +
+					            "FOREIGN KEY (followerEmail) References User(email), " +
+					            "FOREIGN KEY (followeeEmail) References User(email), " +
+					            "Primary key (followerEmail, followeeEmail), " +
+					            "constraint self_follow check (FollowerEmail <> FolloweeEmail) " +
+					        "); "),
+					        "drop table if exists Comments; ",
+					        ("Create Table if not exists Comments( " +
+					        	"imageId Integer, " +
+					            "email VARCHAR(32), " +
+					            "comment varchar(200), " +
+					            "FOREIGN KEY (email) REFERENCES User(email), " +
+					            "FOREIGN KEY (imageId) References image(imageId), " +
+					            "Primary key(email,imageId) " +
+					        "); "),
+					        "drop table if exists ImageTag; ",
+					        ("create table if not exists ImageTag( " +
+					        	"imageId Integer, " +
+					            "tagId integer, " +
+					        	"FOREIGN KEY (imageId) REFERENCES Image(imageId), " +
+					            "FOREIGN KEY (tagId) References tags(tagId), " +
+					            "primary key(imageId, tagId) " +
+					        "); "),			
+					        "drop table if exists likes; ",
+					        ("create table if not exists likes( " +
+					        	"email  varchar(32), " +
+					            "imageId integer, " +
+					            "likeSwitch boolean, " +
+					            "Foreign key (email) references user(email), " +
+					            "Foreign key (imageID) references image(imageid), " +
+					            "primary key (email, imageId) " +
+					        "); ")};
+        
+        String[] FAKETUPLES = {("insert into User(email, firstName, lastName, password, birthday, gender) "+
+			        		"values ('john1234@gmail.com', 'John', 'Smith', 'john1234', '1999-02-20', 'male'),"+
+			    		 	"('jane5678@gmail.com', 'Jane', 'Doe','jane5678', '1969-04-20', 'female'),"+
+			    	 	 	"('jingle444@gmail.com', 'Jingle', 'heimer-schmidt','jingle444', '1984-02-03', 'male'),"+
+			    		 	"('bubble.Gum@gmail.com', 'Jacob', 'heimer-schmidt','bubble.Gum', '2002-02-04', 'male'),"+
+			    		 	"('freyja111@gmail.com', 'Freyja', 'Aesmiri','Freyja111', '1947-06-11', 'female'),"+
+			    		 	"('blue42@gmail.com', 'katalyn', 'Dinkleburger','blue42', '1997-04-04', 'female'),"+
+			    			"('echoOne@gmail.com', 'Nick', 'Foster','echoOne', '1993-05-15', 'male'),"+
+			    			"('test@gmail.com', 'test', 'test','test', '2012-07-14', 'female'),"+
+			    			"('aquaforce@gmail.com', 'Jeff', 'Himagain','aquaforce', '1995-05-05', 'male'),"+
+			    			"('valarie420@gmail.com', 'Valerie', 'Schmidt','val420', '1977-12-24', 'female');"),
+						    ("insert into image(email, url, description)"+
+						    	"values ('john1234@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('jane5678@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('jingle444@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('bubble.Gum@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('freyja111@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('blue42@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('echoOne@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('test@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('aquaforce@gmail.com', 'placeholderURL', 'an image of a sunset'),"+
+						               "('valarie420@gmail.com', 'placeholderURL', 'an image of a sunset');"),
+						    ("insert into tags(tag)"+
+						    	"values ('Michigan'),"+
+						    			"('Huron'),"+
+						    			"('Ontario'),"+
+						    			"('Erie'),"+
+						    			"('Superior'),"+
+						    			"('Atlantic'),"+
+						    			"('Pacific'),"+
+						    			"('Tahoe'),"+
+						    			"('Mississippi'),"+
+						    			"('Gladwin');"),
+						    ("insert into follows(followerEmail, followeeEmail)"+
+						    	"values ('john1234@gmail.com', 'echoOne@gmail.com'),"+
+						    			"('john1234@gmail.com', 'aquaforce@gmail.com'),"+
+						    			"('john1234@gmail.com', 'test@gmail.com'),"+
+						    			"('john1234@gmail.com', 'freyja111@gmail.com'),"+
+						    			"('john1234@gmail.com', 'bubble.Gum@gmail.com'),"+
+						    			"('john1234@gmail.com', 'jingle444@gmail.com'),"+
+						    			"('john1234@gmail.com', 'jane5678@gmail.com'),"+
+						    			"('jane5678@gmail.com', 'echoOne@gmail.com'),"+
+						    			"('test@gmail.com','aquaforce@gmail.com'),"+
+						    			"('valarie420@gmail.com','blue42@gmail.com');"),
+						    ("insert into comments(imageId, email, comment)"+
+						    	"values (1,'john1234@gmail.com','Cool pic'),"+
+						    			"(1,'jane5678@gmail.com','ur so lucky!!1'),"+
+						    			"(2,'john1234@gmail.com','what a pretty sunset'),"+
+						    			"(3,'jingle444@gmail.com','where did you get that pic?'),"+
+						    			"(4,'jane5678@gmail.com','omg its beautiful!'),"+
+						    			"(4,'test@gmail.com','noice'),"+
+						    			"(4,'john1234@gmail.com','Very cool!'),"+
+						    			"(5,'test@gmail.com','love it'),"+
+						    			"(6,'jingle444@gmail.com','kinda lame tbh'),"+
+						    			"(7,'john1234@gmail.com','Pretty pic, maybe a better angle next time');"),
+						    ("insert into ImageTag(imageId, tagId)"+
+						    	"values (1,1),"+
+						    			"(1,2),"+
+						    			"(1,3),"+
+						    			"(2,1),"+
+						    			"(3,1),"+
+						    			"(3,2),"+
+						    			"(4,1),"+
+						    			"(5,1),"+
+						    			"(6,1),"+
+						    			"(7,1);"),
+						    ("insert into likes(email, imageId, likeSwitch)"+
+						    	"values ('john1234@gmail.com',1,true),"+
+						    			"('jane5678@gmail.com',1,true),"+
+						    			"('jingle444@gmail.com',1,true),"+
+						    			"('john1234@gmail.com',2,true),"+
+						    			"('jane5678@gmail.com',3,true),"+
+						    			"('jingle444@gmail.com',4,true),"+
+						    			"('test@gmail.com',4,true),"+
+						    			"('jingle444@gmail.com',5,true),"+
+						    			"('jane5678@gmail.com',4,true),"+
+						    			"('john1234@gmail.com',5,true);")};
+        
+        for (int i = 0; i < CREATION.length; i++)
+        	statement.execute(CREATION[i]);
+        for (int i = 0; i < FAKETUPLES.length; i++)	
+        	statement.execute(FAKETUPLES[i]);
+        disconnect();
+        **/
+
     }
     
-    public void batchSqlExecuter(String file,String user, String password) throws SQLException, FileNotFoundException{
+    public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
     	//Connect to database
-    	connect_func(user, password);
+    	connect_func();
     	
+		StringBuilder initScript = new StringBuilder("");
     	//set our file and scan it
-    	File script = new File(file);
-		Scanner reader = new Scanner(script);
-		String initScript = "";
-		while(reader.hasNextLine()) {
-			initScript += reader.nextLine();
-		}
+    	try {
+	    	FileReader myFile = new FileReader(file);
+	    	BufferedReader reader = new BufferedReader(myFile);
+			String line = reader.readLine();
+			while(line != null) {
+				initScript.append(line);
+				line = reader.readLine();
+			}
+			reader.close();
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    		System.out.println(e.getMessage());
+    	}
 		
-		//break our script into a string array using ; as a delimeter
-		String[] sqlCalls = initScript.split(";");
+		String sqlScript = initScript.toString();
+		//break our script into a string array using ; as a delimiter
+		String[] sqlCalls = sqlScript.split(";");
 		
 		for(int x=0; x < sqlCalls.length; x++) {
 			statement = (Statement) connect.createStatement();
 			statement.execute(sqlCalls[x] + ";");
 		}
 		
-		reader.close();
+		
 		disconnect();
     }
     
