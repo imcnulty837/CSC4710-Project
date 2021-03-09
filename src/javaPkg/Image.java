@@ -11,6 +11,12 @@ public class Image {
 		
 	}
 	
+	public Image(String url, String email, String description) {
+		this.url = url;
+		this.description = description;
+		this.email = email;
+	}
+	
 	public Image(String url, String imageId, String description, String timestamp, String email) {
 		this.url = url;
 		this.imageId = imageId;
