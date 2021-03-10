@@ -1,4 +1,4 @@
-package javaPkg;
+package javaPkg.dataAccess;
 // Originally the PeopleDAO class, updated to manage the Account class
 
 import java.io.BufferedReader;

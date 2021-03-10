@@ -1,4 +1,4 @@
-package javaPkg;
+package javaPkg.dataAccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,14 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CommentDAO {
+public class TagDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	public CommentDAO(){}
+	public TagDAO(){}
 	
 	protected void connect_func() throws SQLException {
     	//uses default connection to the database
@@ -51,4 +51,30 @@ public class CommentDAO {
         	connect.close();
         }
     }
+
+	public void insert(Tag tag) throws SQLException {
+	  String sql = "INSERT into tags(tag) values (?)";
+	  connect_func();
+	   	
+	  preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+	  preparedStatement.setString(1, tag.getTag());
+	   	
+	  preparedStatement.executeUpdate();
+	  preparedStatement.close();
+	   	
+	  disconnect();
+	} 
+
+	public void delete(Tag tag) throws SQLException {
+	  String sql = "DELETE from tags where tag = ?";
+	  connect_func();
+	   	
+	  preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+	  preparedStatement.setString(1, tag.getTag());
+	   	
+	  preparedStatement.executeUpdate();
+	  preparedStatement.close();
+	   	
+	  disconnect();
+	}	
 }

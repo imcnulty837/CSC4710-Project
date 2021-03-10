@@ -1,4 +1,4 @@
-package javaPkg;
+package javaPkg.dataAccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,14 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class LikeDAO {
+public class ImageDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	public LikeDAO(){}
+	public ImageDAO(){}
 	
 	protected void connect_func() throws SQLException {
     	//uses default connection to the database
@@ -53,36 +53,40 @@ public class LikeDAO {
     }
 	
 	/**
-     * Prints out the like count of a particular image
-     * @param imageid, the id of the image whos like count is being evaluated
+     * Retrieves the id of the image targeted by the email and url combo
+     * @param email, the poster's email
+     * @param url, the image's url
+     * @return id, the id of the image
      */
-    public int likeCount(int imageid) throws SQLException {
-    	int count = 0;
-    	String sql = "SELECT COUNT(likeSwitch) FROM Likes WHERE likeSwitch = true AND imageId = ?";
+    public int retrieveImageId(String email, String url) throws SQLException {
+    	int id = 0;
+    	String sql = "Select imageid from Image where email = ? and url = ?";
     	connect_func();
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-    	preparedStatement.setString(1, imageid);
+    	preparedStatement.setString(1, email);
+    	preparedStatement.setString(2, url);
         ResultSet resultSet = preparedStatement.executeQuery();
-        count = resultSet.getInt();
-    	
-    	preparedStatement.close();
-    	
-    	disconnect();
-    	return count;
+        id = resultSet.getInt("imageId");
+        
+        resultSet.close();
+        statement.close();
+        disconnect();
+        return id;
     }
     
     /**
-     * Adds a true value to the likes table according to email of liker and image id of liked photo
-     * @param like, a Like object
+     * Adds a new entry to the image table with the given parameters
+     * @param image, an image object
      */
-    public void insert(Like like) throws SQLException {
-    	String sql = "INSERT into Likes(email, imageId, likeSwitch) values (?, ?, true)";
+    public void insert(Image image) throws SQLException {
+    	String sql = "Insert into image(email, url, description) values (?,?,?)";
     	connect_func();
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-    	preparedStatement.setString(1, like.getEmail());
-    	preparedStatement.setString(2, like.getImageId());
+    	preparedStatement.setString(1, image.getEmail());
+    	preparedStatement.setString(2, image.getUrl());
+    	preparedStatement.setString(3, image.getDescription());
     	
     	preparedStatement.executeUpdate();
     	preparedStatement.close();
@@ -91,42 +95,38 @@ public class LikeDAO {
     }
     
     /**
-     * Unlike a photo
-     * @param like, a Like object
+     * Deletes an entry from the image table
+     * @param image, an image object
      */
-    public void delete(Like like) throws SQLException {
-    	String sql = "DELETE from Likes where email = ? and imageid = ?";
+    public void delete(Image image) throws SQLException {
+    	String sql = "Delete from image where email = ? and url = ?";
     	connect_func();
     	
-	    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-	    	preparedStatement.setString(1, like.getEmail());
-	    	preparedStatement.setString(2, like.getImageId());
-	    	
-	    	preparedStatement.executeUpdate();
-	    	preparedStatement.close();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, image.getEmail());
+    	preparedStatement.setString(2, image.getUrl());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
     	
     	disconnect();
     }
     
     /**
-     * Checks if the like pair exists for the unlike function
-     * @param email, the email of the user unliking a picture
-     * @param imageid, the id of the picture being unliked
-     * @return flag, true if the pair exists, false otherwise
+     * Changes the description of the photo
+     * @param image, an Image object
      */
-    public boolean check(String email, int imageid) throws SQLException {
-    	boolean flag = false;
-    	String sql = "SELECT * FROM Likes WHERE email = ? and imageid = ?";
+    public void update(Image image) throws SQLException {
+    	String sql = "Update Image set description = ? where email = ? and url = ?";
     	connect_func();
+    	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, email);
-        preparedStatement.setString(2, imageid);
-        ResultSet resultSet = preparedStatement.executeQuery();
-                
-        if (resultSet.next()) {
-        	flag = true;
-        }
-            
-    	return flag;
+    	preparedStatement.setString(1, image.getDescription());
+    	preparedStatement.setString(2, image.getEmail());
+    	preparedStatement.setString(3, image.getUrl());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	disconnect();
     }
 }

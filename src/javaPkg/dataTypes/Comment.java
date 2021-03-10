@@ -1,4 +1,4 @@
-package javaPkg;
+package javaPkg.dataType;
 
 public class Comment {
 	private int imageid;

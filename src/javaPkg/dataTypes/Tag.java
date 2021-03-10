@@ -1,4 +1,4 @@
-package javaPkg;
+package javaPkg.dataType;
 
 import java.lang.String;
 
