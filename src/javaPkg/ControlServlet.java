@@ -30,7 +30,8 @@ import java.sql.PreparedStatement;
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
- 
+    private ImageDAO imageDAO;
+    
     public ControlServlet() {
     	
     }
@@ -86,9 +87,10 @@ public class ControlServlet extends HttpServlet {
     	 }
     	 else if(accountDAO.dbLogin(username,password)) {
     			 System.out.println("Login Successful! Redirecting now!");
+    			 feedPage(request, response, username);
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
     			 request.setAttribute("username", username);
-    			 request.getRequestDispatcher("accountView.jsp").forward(request,response);				//redirect our user to accountview
+    			 request.getRequestDispatcher("feedPage.jsp").forward(request,response);		//redirect our user to accountview
     	 }
     	 else {
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
@@ -125,9 +127,10 @@ public class ControlServlet extends HttpServlet {
    	 	}
     }
     
-    private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQlException{
-    	//List<Image> images = 
-    	request.setAttribute("listPeople", listPeople);       
+    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, SQlException{
+    	List<Image> images = ImageDAO.getFeed(user);
+    	request.setAttribute("username", user);
+    	request.setAttribute("listImages", images);       
     	request.getRequestDispatcher("feedPage.jsp").forward(request,response);    
     }
 }

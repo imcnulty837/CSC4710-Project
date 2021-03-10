@@ -129,4 +129,26 @@ public class ImageDAO {
     	preparedStatement.close();
     	disconnect();
     }
+    
+    public list<Image> getFeed(String user){
+    	List<Image> images = new ArrayList<Image>;
+    	String sql = "Select * from Image where email = ?";
+    	preparedStatment = connect.prepareStatement(sql);
+    	preparedStatement.setString(1, user);
+    	ResultSet resultSet = preparedStatement.executeQuery();
+    	
+    	while(resultSet.next()) {
+    		int id = resultSet.getInt("imageId");
+    		Timestamp t = resultSet.getTimestamp("ts");
+    		String em = resultSet.getString("email");
+    		String url resultSet.getString("url");
+    		String descript = resultSet.getString("description");
+    		
+    		images.add(new Image(id, t, em, url, descript));
+    	}
+    	resultSet.close()
+    	statement.close()
+    	disconnect();
+    	return images;
+    }
 }
