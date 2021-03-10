@@ -21,7 +21,7 @@ insert into image(email, url, description)
            ("blue42@gmail.com", "placeholderURL", "an image of a sunset"),
            ("echoOne@gmail.com", "placeholderURL", "an image of a sunset"),
            ("test@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("aquaforce@gmail.com", "placeholderURL", "an image of a sunset"),
+           ("aquaforce@gmail.com", "https://earthsky.org/upl/2013/09/sunrise-red-sea-Graham-Telford-e1489764712368.jpg", "an image of a sunset"),
            ("valarie420@gmail.com", "placeholderURL", "an image of a sunset");
            
 insert into tags(tag)

@@ -7,8 +7,10 @@
 <body>
 	<div align="center">
 		<h1>Welcome ${username}</h1>
-		<c:forEach items="${listImages}" var="Image">	
-			<img src=${Image.url} alt="image" width="500" height="300">
+		<c:forEach items="${listImages}" var="Image">
+			<h4>posted by ${Image.email}</h4>
+			<img src=${Image.url} alt="image">
+			<p>${Image.description}</p>
 		</c:forEach>
 	</div>
 </body>
