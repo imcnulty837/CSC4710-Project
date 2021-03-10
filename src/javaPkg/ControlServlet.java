@@ -70,7 +70,7 @@ public class ControlServlet extends HttpServlet {
         }
     }
     
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
     	//get parameters from our login.jsp textboxes
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");

@@ -1,14 +1,13 @@
 create database if not exists testdb;
 use testdb;
 
-
 drop table if exists ImageTag;
 drop table if exists likes;
 drop table if exists follows;
 drop table if exists Comments;
 drop table if exists Image;
-drop table if exists User;
 drop table if exists tags;
+drop table if exists User;
 
 CREATE TABLE if not exists User(
     email VARCHAR(32) NOT NULL,
@@ -20,7 +19,6 @@ CREATE TABLE if not exists User(
     PRIMARY KEY (email)
 );
 
-drop table if exists Image;
 CREATE TABLE if not exists Image(
 	imageId INTEGER NOT NULL auto_increment,
 	ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

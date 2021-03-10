@@ -55,7 +55,8 @@ public class AccountDAO {
         }
     }
     
-    public boolean dbLogin(String username, String password) {
+    public boolean dbLogin(String username, String password) throws SQLException{
+    	/**
     	try {
     		connect_func(username, password);
     	}
@@ -63,7 +64,10 @@ public class AccountDAO {
     		System.out.println("failed login");
     		return false;
     	}
-    	return true;
+    	**/
+    	if (checkEmail(username) && checkPassword(password))
+    		return true;
+    	return false;
     }
     
     public void connect_func(String username, String password) throws SQLException {
@@ -92,7 +96,7 @@ public class AccountDAO {
     public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
     	//this is a batch executer meant to perform management bulk-sql operations from .sql files
     	//Connect to database
-    	connect_func("root","root1234");
+    	connect_func();
     	
 		StringBuilder initScript = new StringBuilder("");
     	//set our file and try to scan it
@@ -202,25 +206,6 @@ public class AccountDAO {
         return rowUpdated;     
     }
     
-    public boolean checkEmail(String email) throws SQLException {
-    	boolean torf = false;
-    	String sql = "SELECT * FROM User WHERE email = ?";
-    	connect_func("root", "root1234");
-    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, email);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        
-        System.out.println(torf);	
-        
-        if (resultSet.next()) {
-        	torf = true;
-        }
-        
-        System.out.println(torf);
-    
-    	return torf;
-    }
-	
     public Account getPeople(String email) throws SQLException {
     	Account account = null;
         String sql = "SELECT * FROM User WHERE email = ?";
@@ -246,6 +231,279 @@ public class AccountDAO {
         statement.close();
          
         return account;
+    }
+    
+    /**
+     * Retrieves the id of the image targeted by the email and url combo
+     * @param email, the poster's email
+     * @param url, the image's url
+     * @return id, the id of the image
+     */
+    public int retrieveImageId(String email, String url) throws SQLException {
+    	int id = 0;
+    	String sql = "Select imageid from Image where email = ? and url = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, email);
+    	preparedStatement.setString(2, url);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        id = resultSet.getInt("imageId");
+        
+        resultSet.close();
+        statement.close();
+        disconnect();
+        return id;
+    }
+    
+    /**
+     * Adds a new entry to the image table with the given parameters
+     * @param image, an image object
+     */
+    public void uploadPhoto(Image image) throws SQLException {
+    	String sql = "Insert into image(email, url, description) values (?,?,?)";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, image.getEmail());
+    	preparedStatement.setString(2, image.getUrl());
+    	preparedStatement.setString(3, image.getDescription());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    /**
+     * Deletes an entry from the image table
+     * @param image, an image object
+     */
+    public void deletePhoto(Image image) throws SQLException {
+    	String sql = "Delete from image where email = ? and url = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, image.getEmail());
+    	preparedStatement.setString(2, image.getUrl());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    /**
+     * Changes the description of the photo
+     * @param image, an Image object
+     */
+    public void modifyPhoto(Image image) throws SQLException {
+    	String sql = "Update Image set description = ? where email = ? and url = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, image.getDescription());
+    	preparedStatement.setString(2, image.getEmail());
+    	preparedStatement.setString(3, image.getUrl());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	disconnect();
+    }
+    
+    /**
+     * Prints out the like count of a particular image
+     * @param imageid, the id of the image whos like count is being evaluated
+     */
+    public int likeCount(int imageid) throws SQLException {
+    	int count = 0;
+    	String sql = "SELECT COUNT(likeSwitch) FROM Likes WHERE likeSwitch = true AND imageId = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, imageid);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        count = resultSet.getInt();
+    	
+    	preparedStatement.close();
+    	
+    	disconnect();
+    	return count;
+    }
+    
+    /**
+     * Adds a true value to the likes table according to email of liker and image id of liked photo
+     * @param like, a Like object
+     */
+    public void like(Like like) throws SQLException {
+    	String sql = "INSERT into Likes(email, imageId, likeSwitch) values (?, ?, true)";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, like.getEmail());
+    	preparedStatement.setString(2, like.getImageId());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    /**
+     * Unlike a photo
+     * @param like, a Like object
+     */
+    public void unlike(Like like) throws SQLException {
+    	String sql = "DELETE from Likes where email = ? and imageid = ?";
+    	connect_func();
+    	
+	    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+	    	preparedStatement.setString(1, like.getEmail());
+	    	preparedStatement.setString(2, like.getImageId());
+	    	
+	    	preparedStatement.executeUpdate();
+	    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    /**
+     * Returns the follower count for the user
+     * @param followeeemail, email to be checked
+     * @return count, number of followers for this input email
+     */
+    public int followCount(String followeeemail) throws SQLException {
+    	int count = 0;
+    	String sql = "SELECT COUNT(followeremail) FROM followers WHERE followeeemail = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, followeeemail);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        count = resultSet.getInt();
+    	
+    	preparedStatement.close();
+    	
+    	disconnect();
+    	return count;
+    }
+    
+    /**
+     * Allows a given user to follow another user
+     * @param follow, a Follow object
+     */
+    public void follow(Follow follow) throws SQLException {
+    	String sql = "INSERT into follows(followeremail, followeeemail) values (?, ?)";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, follow.getFollowerEmail());
+    	preparedStatement.setString(2, follow.getFolloweeEmail());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    /**
+     * Allows a given user to unfollow another user
+     * @param follow, a Follow object
+     */
+    public void unfollow(Follow follow) throws SQLException {
+    	String sql = "DELETE from follows where followeremail = ? and followeeemail = ?";
+    	connect_func();
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	preparedStatement.setString(1, follow.getFollowerEmail());
+    	preparedStatement.setString(2, follow.getFolloweeEmail());
+    	
+    	preparedStatement.executeUpdate();
+    	preparedStatement.close();
+    	
+    	disconnect();
+    }
+    
+    public boolean checkEmail(String email) throws SQLException {
+    	boolean torf = false;
+    	String sql = "SELECT * FROM User WHERE email = ?";
+    	connect_func();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        System.out.println(torf);	
+        
+        if (resultSet.next()) {
+        	torf = true;
+        }
+        
+        System.out.println(torf);
+    
+    	return torf;
+    }
+    
+    public boolean checkPassword(String password) throws SQLException {
+    	boolean torf = false;
+    	String sql = "SELECT * FROM User WHERE password = ?";
+    	connect_func();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, password);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        System.out.println(torf);	
+        
+        if (resultSet.next()) {
+        	torf = true;
+        }
+        
+        System.out.println(torf);
+    
+    	return torf;
+    }
+    
+    /**
+     * Checks if the like pair exists for the unlike function
+     * @param email, the email of the user unliking a picture
+     * @param imageid, the id of the picture being unliked
+     * @return flag, true if the pair exists, false otherwise
+     */
+    public boolean checkLike(String email, int imageid) throws SQLException {
+    	boolean flag = false;
+    	String sql = "SELECT * FROM Likes WHERE email = ? and imageid = ?";
+    	connect_func();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, email);
+        preparedStatement.setString(2, imageid);
+        ResultSet resultSet = preparedStatement.executeQuery();
+                
+        if (resultSet.next()) {
+        	flag = true;
+        }
+            
+    	return flag;
+    }
+    
+    /**
+     * Checks if the follows pair exists for the unfollow function
+     * @param followeremail, the email of the follower
+     * @param followeeemail, the email of the followee
+     * @return flag, true if the pair exists, false otherwise
+     */
+    public boolean checkFollow(String followeremail, String followeeemail) throws SQLException {
+    	boolean flag = false;
+    	String sql = "SELECT * FROM follows WHERE followeremail = ? and followeeemail = ?";
+    	connect_func();
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+        preparedStatement.setString(1, followeremail);
+        preparedStatement.setString(2, followeremail);
+        ResultSet resultSet = preparedStatement.executeQuery();
+                
+        if (resultSet.next()) {
+        	flag = true;
+        }
+            
+    	return flag;
     }
     
     public void init_backup() throws SQLException, FileNotFoundException, IOException{
