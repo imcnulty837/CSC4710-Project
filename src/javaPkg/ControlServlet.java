@@ -61,6 +61,9 @@ public class ControlServlet extends HttpServlet {
         		System.out.println("Database successfully initialized!");
         		response.sendRedirect("rootView.jsp");
         		break;
+        	case "/feedPage":
+        		feedPage(request,response);
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -120,5 +123,11 @@ public class ControlServlet extends HttpServlet {
    		 request.setAttribute("errorTwo","Registration failed: Password and Password Confirmation do not match.");
    		 request.getRequestDispatcher("register.jsp").forward(request, response);
    	 	}
+    }
+    
+    private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQlException{
+    	//List<Image> images = 
+    	request.setAttribute("listPeople", listPeople);       
+    	request.getRequestDispatcher("feedPage.jsp").forward(request,response);    
     }
 }
