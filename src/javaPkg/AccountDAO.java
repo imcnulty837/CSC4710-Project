@@ -57,13 +57,21 @@ public class AccountDAO {
     
     public boolean dbLogin(String username, String password) {
     	try {
-    		connect_func(username, password);
+    		connect_func("root", "root1234");
+    		String sql = "Select * from User where email = ? and password = ?";
+    		preparedStatement = connect.prepareStatement(sql);
+    		preparedStatement.setString(1, username);
+    		preparedStatement.setString(2, password);
+    		System.out.println(preparedStatement.toString());
+    		ResultSet rs = preparedStatement.executeQuery();
+    		//returns false if the result set is empty, true if result set is true
+    		return rs.next();
+    		
     	}
     	catch(SQLException e) {
     		System.out.println("failed login");
     		return false;
     	}
-    	return true;
     }
     
     public void connect_func(String username, String password) throws SQLException {

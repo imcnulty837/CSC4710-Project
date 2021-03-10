@@ -30,7 +30,6 @@ import java.sql.PreparedStatement;
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
-    
  
     public ControlServlet() {
     	
@@ -75,7 +74,6 @@ public class ControlServlet extends HttpServlet {
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
     	 
-    	 System.out.println("Echo1");
     	 //simple if to compare the textbox contents with our users treemap
     	 if (username.equals("root") && password.equals("root1234")) {
 			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
@@ -86,11 +84,10 @@ public class ControlServlet extends HttpServlet {
     	 else if(accountDAO.dbLogin(username,password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
-    			 session.setAttribute("username", username);
-    			 response.sendRedirect("accountView.jsp");				//redirect our user to accountview
+    			 request.setAttribute("username", username);
+    			 request.getRequestDispatcher("accountView.jsp").forward(request,response);				//redirect our user to accountview
     	 }
     	 else {
-    		 System.out.println("Failed Login");
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
     		 request.getRequestDispatcher("login.jsp").forward(request, response);
     	 }
