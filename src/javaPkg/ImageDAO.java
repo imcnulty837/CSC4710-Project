@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageDAO {
 	private static final long serialVersionUID = 1L;
@@ -128,5 +131,26 @@ public class ImageDAO {
     	preparedStatement.executeUpdate();
     	preparedStatement.close();
     	disconnect();
+    }
+    
+    public List<Image> getFeed(String user) throws SQLException{
+    	List<Image> images = new ArrayList<Image>();
+    	connect_func("root","root1234");
+    	String sql = "Select * from Image where email = ?";
+    	preparedStatement = connect.prepareStatement(sql);
+    	preparedStatement.setString(1, user);
+    	ResultSet resultSet = preparedStatement.executeQuery();
+    	
+    	while(resultSet.next()) {
+    		int id = resultSet.getInt("imageId");
+    		Timestamp t = resultSet.getTimestamp("ts");
+    		String em = resultSet.getString("email");
+    		String url = resultSet.getString("url");
+    		String descript = resultSet.getString("description");
+    		
+    		images.add(new Image(id, t, em, url, descript));
+    	}
+    	disconnect();
+    	return images;
     }
 }

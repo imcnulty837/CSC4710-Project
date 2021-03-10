@@ -59,13 +59,13 @@ public class FollowDAO {
     */
    public int followCount(String followeeemail) throws SQLException {
    	int count = 0;
-   	String sql = "SELECT COUNT(followeremail) FROM followers WHERE followeeemail = ?";
+   	String sql = "SELECT COUNT(followeremail) c FROM followers WHERE followeeemail = ?";
    	connect_func();
    	
    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
    	preparedStatement.setString(1, followeeemail);
        ResultSet resultSet = preparedStatement.executeQuery();
-       count = resultSet.getInt();
+       count = resultSet.getInt("c");
    	
    	preparedStatement.close();
    	

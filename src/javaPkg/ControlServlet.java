@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.List;
 import java.sql.PreparedStatement;
  
 /** 
@@ -30,14 +31,15 @@ import java.sql.PreparedStatement;
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
+    private ImageDAO imageDAO;
     
- 
     public ControlServlet() {
     	
     }
     
     public void init() {
         accountDAO = new AccountDAO(); 
+        imageDAO = new ImageDAO();
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -75,7 +77,6 @@ public class ControlServlet extends HttpServlet {
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
     	 
-    	 System.out.println("Echo1");
     	 //simple if to compare the textbox contents with our users treemap
     	 if (username.equals("root") && password.equals("root1234")) {
 			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
@@ -85,12 +86,9 @@ public class ControlServlet extends HttpServlet {
     	 }
     	 else if(accountDAO.dbLogin(username,password)) {
     			 System.out.println("Login Successful! Redirecting now!");
-    			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
-    			 session.setAttribute("username", username);
-    			 response.sendRedirect("accountView.jsp");				//redirect our user to accountview
+    			 feedPage(request, response, username);
     	 }
     	 else {
-    		 System.out.println("Failed Login");
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
     		 request.getRequestDispatcher("login.jsp").forward(request, response);
     	 }
@@ -110,7 +108,7 @@ public class ControlServlet extends HttpServlet {
 	   	 		System.out.println("Registration Successful! Added to database, redirecting to Account View!");
 	   	 		Account account = new Account(username, firstName, lastName, password, birthday, gender);
 	   	 		accountDAO.insert(account);
-	   	 		response.sendRedirect("accountView.jsp");
+	   	 		response.sendRedirect("feedPage.jsp");
    	 		}
 	   	 	else {
 	   	 		System.out.println("Username taken, please enter new username");
@@ -123,5 +121,12 @@ public class ControlServlet extends HttpServlet {
    		 request.setAttribute("errorTwo","Registration failed: Password and Password Confirmation do not match.");
    		 request.getRequestDispatcher("register.jsp").forward(request, response);
    	 	}
+    }
+    
+    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, IOException, SQLException{
+    	List<Image> images = imageDAO.getFeed(user);
+    	request.setAttribute("username", user);
+    	request.setAttribute("listImages", images);       
+    	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
     }
 }
