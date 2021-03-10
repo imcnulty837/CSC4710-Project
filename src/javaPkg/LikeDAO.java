@@ -58,13 +58,13 @@ public class LikeDAO {
      */
     public int likeCount(int imageid) throws SQLException {
     	int count = 0;
-    	String sql = "SELECT COUNT(likeSwitch) FROM Likes WHERE likeSwitch = true AND imageId = ?";
+    	String sql = "SELECT COUNT(likeSwitch) c FROM Likes WHERE likeSwitch = true AND imageId = ?";
     	connect_func();
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-    	preparedStatement.setString(1, imageid);
+    	preparedStatement.setInt(1, imageid);
         ResultSet resultSet = preparedStatement.executeQuery();
-        count = resultSet.getInt();
+        count = resultSet.getInt("c");
     	
     	preparedStatement.close();
     	
@@ -82,7 +82,7 @@ public class LikeDAO {
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
     	preparedStatement.setString(1, like.getEmail());
-    	preparedStatement.setString(2, like.getImageId());
+    	preparedStatement.setInt(2, like.getImageId());
     	
     	preparedStatement.executeUpdate();
     	preparedStatement.close();
@@ -100,7 +100,7 @@ public class LikeDAO {
     	
 	    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 	    	preparedStatement.setString(1, like.getEmail());
-	    	preparedStatement.setString(2, like.getImageId());
+	    	preparedStatement.setInt(2, like.getImageId());
 	    	
 	    	preparedStatement.executeUpdate();
 	    	preparedStatement.close();
@@ -120,7 +120,7 @@ public class LikeDAO {
     	connect_func();
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
         preparedStatement.setString(1, email);
-        preparedStatement.setString(2, imageid);
+        preparedStatement.setInt(2, imageid);
         ResultSet resultSet = preparedStatement.executeQuery();
                 
         if (resultSet.next()) {

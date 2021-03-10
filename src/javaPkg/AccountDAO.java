@@ -50,24 +50,24 @@ public class AccountDAO {
             }
             connect = (Connection) DriverManager
   			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
-  			          + "useSSL=false&user=john&password=john1234");
+  			          + "useSSL=false&user=root&password=root1234");
             System.out.println(connect);
         }
     }
     
     public boolean dbLogin(String username, String password) throws SQLException{
-    	/**
     	try {
-    		connect_func(username, password);
+    		connect_func("root","root1234");
+    		String sql = "select * from user where email = ?";
+    		preparedStatement = connect.prepareStatement(sql);
+    		preparedStatement.setString(1, username);
+    		ResultSet rs = preparedStatement.executeQuery();
+    		return rs.next();
     	}
     	catch(SQLException e) {
     		System.out.println("failed login");
     		return false;
     	}
-    	**/
-    	if (checkEmail(username) && checkPassword(password))
-    		return true;
-    	return false;
     }
     
     public void connect_func(String username, String password) throws SQLException {
@@ -96,7 +96,7 @@ public class AccountDAO {
     public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
     	//this is a batch executer meant to perform management bulk-sql operations from .sql files
     	//Connect to database
-    	connect_func();
+    	connect_func("root","root1234");
     	
 		StringBuilder initScript = new StringBuilder("");
     	//set our file and try to scan it

@@ -1,5 +1,7 @@
 package javaPkg;
 
+import java.sql.Timestamp;
+
 public class Image {
 	protected int imageId;
 	protected Timestamp timestamp;
@@ -17,7 +19,7 @@ public class Image {
 		this.email = email;
 	}
 	
-	public Image(int imageId,  Timestap timestamp, String email, String url, String description) {
+	public Image(int imageId,  Timestamp timestamp, String email, String url, String description) {
 		this.url = url;
 		this.imageId = imageId;
 		this.description = description;

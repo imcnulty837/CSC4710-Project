@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.List;
 import java.sql.PreparedStatement;
  
 /** 
@@ -38,6 +39,7 @@ public class ControlServlet extends HttpServlet {
     
     public void init() {
         accountDAO = new AccountDAO(); 
+        imageDAO = new ImageDAO();
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -62,9 +64,6 @@ public class ControlServlet extends HttpServlet {
         		System.out.println("Database successfully initialized!");
         		response.sendRedirect("rootView.jsp");
         		break;
-        	case "/feedPage":
-        		feedPage(request,response);
-        		break;
         	}
         }
         catch(Exception ex) {
@@ -88,9 +87,6 @@ public class ControlServlet extends HttpServlet {
     	 else if(accountDAO.dbLogin(username,password)) {
     			 System.out.println("Login Successful! Redirecting now!");
     			 feedPage(request, response, username);
-    			 HttpSession session = request.getSession();		//create a httpsession to save our successful login request for convenience
-    			 request.setAttribute("username", username);
-    			 request.getRequestDispatcher("feedPage.jsp").forward(request,response);		//redirect our user to accountview
     	 }
     	 else {
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
@@ -112,7 +108,7 @@ public class ControlServlet extends HttpServlet {
 	   	 		System.out.println("Registration Successful! Added to database, redirecting to Account View!");
 	   	 		Account account = new Account(username, firstName, lastName, password, birthday, gender);
 	   	 		accountDAO.insert(account);
-	   	 		response.sendRedirect("accountView.jsp");
+	   	 		response.sendRedirect("feedPage.jsp");
    	 		}
 	   	 	else {
 	   	 		System.out.println("Username taken, please enter new username");
@@ -127,10 +123,10 @@ public class ControlServlet extends HttpServlet {
    	 	}
     }
     
-    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, SQlException{
-    	List<Image> images = ImageDAO.getFeed(user);
+    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, IOException, SQLException{
+    	List<Image> images = imageDAO.getFeed(user);
     	request.setAttribute("username", user);
     	request.setAttribute("listImages", images);       
-    	request.getRequestDispatcher("feedPage.jsp").forward(request,response);    
+    	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
     }
 }
