@@ -1,4 +1,4 @@
-package javaPkg;
+package dataAccess;
 // Originally the PeopleDAO class, updated to manage the Account class
 
 import java.io.BufferedReader;
@@ -15,6 +15,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import dataType.Account;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -160,12 +162,12 @@ public class AccountDAO {
     	connect_func("root","root1234");         
 		String sql = "insert into User(email, firstName, lastName, password, birthday, gender) values (?, ?, ?,?,?,?)";
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setString(1, people.email);
-		preparedStatement.setString(2, people.firstName);
-		preparedStatement.setString(3, people.lastName);
-		preparedStatement.setString(4, people.password);
-		preparedStatement.setString(5, people.birthday);
-		preparedStatement.setString(6, people.gender);
+		preparedStatement.setString(1, people.getEmail());
+		preparedStatement.setString(2, people.getFirstName());
+		preparedStatement.setString(3, people.getLastName());
+		preparedStatement.setString(4, people.getPassword());
+		preparedStatement.setString(5, people.getBirthday());
+		preparedStatement.setString(6, people.getGender());
 //		preparedStatement.executeUpdate();
 		
         //boolean rowInserted = preparedStatement.executeUpdate() > 0;
@@ -193,12 +195,12 @@ public class AccountDAO {
         connect_func();
         
         preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-        preparedStatement.setString(1, people.firstName);
-        preparedStatement.setString(2, people.lastName);
-        preparedStatement.setString(3, people.password);
-        preparedStatement.setString(4, people.birthday);
-        preparedStatement.setString(5, people.gender);
-        preparedStatement.setString(6, people.email);
+        preparedStatement.setString(1, people.getFirstName());
+        preparedStatement.setString(2, people.getLastName());
+        preparedStatement.setString(3, people.getPassword());
+        preparedStatement.setString(4, people.getBirthday());
+        preparedStatement.setString(5, people.getGender());
+        preparedStatement.setString(6, people.getEmail());
          
         boolean rowUpdated = preparedStatement.executeUpdate() > 0;
         preparedStatement.close();

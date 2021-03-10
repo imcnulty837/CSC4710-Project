@@ -1,4 +1,4 @@
-package javaPkg;
+package dataAccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,14 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CommentDAO {
+public class ImageTagDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	public CommentDAO(){}
+	public ImageTagDAO(){}
 	
 	protected void connect_func() throws SQLException {
     	//uses default connection to the database

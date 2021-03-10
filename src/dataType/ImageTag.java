@@ -1,4 +1,4 @@
-package javaPkg;
+package dataType;
 
 public class ImageTag {
 	private int imageid;
