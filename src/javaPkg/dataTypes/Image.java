@@ -1,11 +1,11 @@
 package javaPkg.dataType;
 
 public class Image {
-	protected String url;
-	protected String imageId;
-	protected String description;
-	protected String timestamp;
+	protected int imageId;
 	protected String email;
+	protected Timestamp timestamp;
+	protected String url;
+	protected String description;
 	
 	public Image() {
 		
@@ -17,8 +17,8 @@ public class Image {
 		this.email = email;
 	}
 	
-	public Image(String url, String imageId, String description, String timestamp, String email) {
-		this.url = url;
+ 	public Image(int imageId,  Timestap timestamp, String email, String url, String description) {
+ 		this.url = url;
 		this.imageId = imageId;
 		this.description = description;
 		this.timestamp = timestamp;
@@ -31,10 +31,10 @@ public class Image {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public String getImageId() {
+	public int getImageId() {
 		return imageId;
 	}
-	public void setImageId(String imageId) {
+	public void setImageId(int imageId) {
 		this.imageId = imageId;
 	}
 	public String getDescription() {
@@ -43,10 +43,10 @@ public class Image {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getTimestamp() {
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(String timestamp) {
+	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
 	public String getEmail() {
