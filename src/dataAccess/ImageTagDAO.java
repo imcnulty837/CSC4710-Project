@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import dataType.ImageTag;
+
 public class ImageTagDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
@@ -51,4 +53,31 @@ public class ImageTagDAO {
         	connect.close();
         }
     }
+	public void insert(ImageTag imagetag) throws SQLException {
+		String sql = "INSERT into imagetag(imageid, tagid) values (?,?)";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, imagetag.getImageId());
+		preparedStatement.setInt(2, imagetag.getTagId());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
+	} 
+
+	public void delete(ImageTag imagetag) throws SQLException {
+		String sql = "DELETE from imagetag where imageid = ? and tagid = ?";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, imagetag.getImageId());
+		preparedStatement.setInt(2, imagetag.getTagId());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
+	}	
 }

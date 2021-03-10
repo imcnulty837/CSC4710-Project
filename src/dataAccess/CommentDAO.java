@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import dataType.Comment;
+
 public class CommentDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
@@ -51,4 +53,33 @@ public class CommentDAO {
         	connect.close();
         }
     }
+	
+	public void insert(Comment comment) throws SQLException {
+		String sql = "INSERT into comments(imageid, email, comment) values (?,?,?)";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, comment.getImageId());
+		preparedStatement.setString(2, comment.getEmail());
+		preparedStatement.setString(3, comment.getComment());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
+	} 
+
+	public void delete(Comment comment) throws SQLException {
+		String sql = "DELETE from comments where imageid = ? and email = ?";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, comment.getImageId());
+		preparedStatement.setString(2, comment.getEmail());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
+	}	
 }
