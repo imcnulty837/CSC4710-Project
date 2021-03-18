@@ -6,9 +6,10 @@
 <head><title>Account Page</title></head>
 <body>
 	<div align="center">
+		<form action="community" method="post"><input type="submit" value="Community Page"/></form>
 		<h1>Welcome ${username}</h1>
 		<c:forEach items="${listImages}" var="Image">
-			<h4>posted by ${Image.email}</h4>
+			<h4>posted by ${Image.email} at <time>${Image.timestamp}</time></h4>
 			<img src=${Image.url} alt="image">
 			<p>${Image.description}</p>
 		</c:forEach>

@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FollowDAO {
 	private static final long serialVersionUID = 1L;
@@ -26,7 +28,7 @@ public class FollowDAO {
             }
             connect = (Connection) DriverManager
   			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
-  			          + "useSSL=false&user=john&password=john1234");
+  			          + "useSSL=false&user=root&password=root1234");
             System.out.println(connect);
         }
     }
@@ -130,4 +132,23 @@ public class FollowDAO {
            
    	return flag;
    }
+
+	public List<Boolean> followList(String currentUser) throws SQLException{
+		List<Boolean> list = new ArrayList<Boolean>();
+		// this sql will get a list of booleans for our current user regarding who they have/have not followed
+		String sql = "select email, if(followerEmail = ?, true, false) as test from user"
+				+ " left join follows on email = followeeEmail and followerEmail = ? "
+				+ "group by email "
+				+ "order by email;";
+		connect_func();
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setString(1, currentUser);
+		preparedStatement.setString(2, currentUser);
+		ResultSet results = preparedStatement.executeQuery();
+		while(results.next()) {
+			list.add(results.getBoolean(2));
+		}
+		return list;
+	}
+   
 }

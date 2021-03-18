@@ -32,6 +32,8 @@ public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
     private ImageDAO imageDAO;
+    private FollowDAO followDAO;
+    private String currentUser;
     
     public ControlServlet() {
     	
@@ -40,6 +42,8 @@ public class ControlServlet extends HttpServlet {
     public void init() {
         accountDAO = new AccountDAO(); 
         imageDAO = new ImageDAO();
+        followDAO = new FollowDAO();
+        currentUser = "";
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,6 +68,9 @@ public class ControlServlet extends HttpServlet {
         		System.out.println("Database successfully initialized!");
         		response.sendRedirect("rootView.jsp");
         		break;
+        	case "/community":
+        		listUsers(request,response);
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -85,8 +92,9 @@ public class ControlServlet extends HttpServlet {
 			 response.sendRedirect("rootView.jsp");
     	 }
     	 else if(accountDAO.dbLogin(username,password)) {
-    			 System.out.println("Login Successful! Redirecting now!");
-    			 feedPage(request, response, username);
+		 	 currentUser = username;
+			 System.out.println("Login Successful! Redirecting now!");
+			 feedPage(request, response);
     	 }
     	 else {
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
@@ -123,10 +131,18 @@ public class ControlServlet extends HttpServlet {
    	 	}
     }
     
-    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, IOException, SQLException{
-    	List<Image> images = imageDAO.getFeed(user);
-    	request.setAttribute("username", user);
+    private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    	List<Image> images = imageDAO.getFeed(currentUser);
+    	request.setAttribute("username", currentUser);
     	request.setAttribute("listImages", images);       
     	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
+    }
+    
+    private void listUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    	List<Account> users = accountDAO.listAllPeople();
+    	List<Boolean> follows = followDAO.followList(currentUser);
+    	request.setAttribute("userList", users);
+    	request.setAttribute("followList", follows);
+    	request.getRequestDispatcher("CommunityPage.jsp").forward(request, response);
     }
 }
