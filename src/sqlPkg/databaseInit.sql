@@ -23,7 +23,7 @@ CREATE TABLE if not exists Image(
 	imageId INTEGER NOT NULL auto_increment,
 	ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	email Varchar(32),
-    url VARCHAR(100),
+    url VARCHAR(255),
     description VARCHAR(200),
     foreign key (email) references user(email) on delete cascade,
     PRIMARY KEY (imageId)

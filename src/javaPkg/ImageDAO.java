@@ -137,9 +137,20 @@ public class ImageDAO {
     public List<Image> getFeed(String user) throws SQLException{
     	List<Image> images = new ArrayList<Image>();
     	connect_func("root","root1234");
-    	String sql = "Select * from Image where email = ? order by ts desc";
+    	//String sql = "Select * from Image where email = ? order by ts desc";
+    	String sql = "select * from image "
+    	+ "left join follows "
+    	+"on email = followeeEmail "
+    	+"where followerEmail = ? or email = ? "
+    	+"group by email,url "
+    	+"order by ts desc;";
+    	
+    	
+    	
+    	
     	preparedStatement = connect.prepareStatement(sql);
     	preparedStatement.setString(1, user);
+    	preparedStatement.setString(2, user);
     	ResultSet resultSet = preparedStatement.executeQuery();
     	
     	while(resultSet.next()) {

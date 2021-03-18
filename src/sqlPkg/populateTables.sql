@@ -13,16 +13,16 @@ insert into User(email, firstName, lastName, password, birthday, gender)
 			("valarie420@gmail.com", "Valerie", "Schmidt","val420", "1977-12-24", "female");
 			
 insert into image(email, url, description)
-	values ("john1234@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("jane5678@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("jingle444@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("bubble.Gum@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("freyja111@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("blue42@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("echoOne@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("test@gmail.com", "placeholderURL", "an image of a sunset"),
-           ("aquaforce@gmail.com", "https://earthsky.org/upl/2013/09/sunrise-red-sea-Graham-Telford-e1489764712368.jpg", "an image of a sunset"),
-           ("valarie420@gmail.com", "placeholderURL", "an image of a sunset");
+	values ("john1234@gmail.com", "https://cdn.pixabay.com/photo/2016/09/07/11/37/tropical-1651426__340.jpg", "Night on the beach"),
+           ("jane5678@gmail.com", "https://images.unsplash.com/photo-1506102383123-c8ef1e872756?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHw%3D&w=1000&q=80", "sun: coming or going?"),
+           ("jingle444@gmail.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Anatomy_of_a_Sunset-2.jpg/1280px-Anatomy_of_a_Sunset-2.jpg", "an image of a sunset"),
+           ("bubble.Gum@gmail.com", "https://cdn.vox-cdn.com/thumbor/MZRJnpwAMIHQ5-XT4FwNv0rivw4=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/19397812/1048232144.jpg.jpg", "this is a sunset image"),
+           ("freyja111@gmail.com", "https://cdn3.dpmag.com/2019/10/shutterstock_1239834655.jpg", "just another beautiful day in paradise."),
+           ("blue42@gmail.com", "https://images.pexels.com/photos/1210273/pexels-photo-1210273.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500", "waffles on the beach?"),
+           ("echoOne@gmail.com", "https://images.pexels.com/photos/3347244/pexels-photo-3347244.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "salmon on the beach"),
+           ("test@gmail.com", "https://cf.bstatic.com/images/hotel/max1024x768/213/213099825.jpg", "Had a great time!"),
+           ("aquaforce@gmail.com", "https://earthsky.org/upl/2013/09/sunrise-red-sea-Graham-Telford-e1489764712368.jpg", "a simple sunset"),
+           ("valarie420@gmail.com", "https://previews.123rf.com/images/cepheia/cepheia1901/cepheia190100030/116755771-japan-traditional-sumi-e-painting-fuji-mountain-sakura-sunset-japan-sun-indian-ink-illustration-japa.jpg", "Japanese Sunset Painting");
            
 insert into tags(tag)
 	values ("Michigan"),

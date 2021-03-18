@@ -43,7 +43,6 @@
 			<p>${Image.description}</p>
 			<c:if test="${Image.email == username }">
 				<form action="delete?url=${Image.url}" method="post"><input type="submit" value="delete"/></form>
-				<p> ${Image.email} --- ${username} </p>
 			</c:if>
 			
 		</c:forEach>

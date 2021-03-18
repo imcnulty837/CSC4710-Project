@@ -20,10 +20,10 @@
 				<td> <form action="follow?email=${Account.email}&status=${followList[i.index]}" method="post"><button> 
 				<c:choose> 
 					<c:when test="${followList[i.index]}" > 
-						<c:out default="follow" value="follow"/> 
+						<c:out default="unfollow" value="unfollow"/> 
 					</c:when> 
 					<c:otherwise>
-						<c:out default="unfollow" value="unfollow"/>
+						<c:out default="follow" value="follow"/>
 					</c:otherwise> 
 				</c:choose>
 				</button>
