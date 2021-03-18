@@ -6,6 +6,8 @@
 <head><title>Account Page</title></head>
 <body>
 	<div align="center">
+	<form action="feed" method="post"><input type="submit" value="return to feed"/></form>
+	<form action="logout" method="post"><input type="submit" value="logout"></form>
 	<table>
 		<tr>
 			<th>Name </th> <th> Email </th> <th>follow/unfollow</th>
@@ -15,7 +17,7 @@
 				<td>${Account.firstName} ${Account.lastName}</td>
 				<td>${Account.email}</td>	
 				<!-- TODO link the follow/unfollow table here relative to current user -->
-				<td> <form action="follow" method="post"><button> 
+				<td> <form action="follow?email=${Account.email}&status=${followList[i.index]}" method="post"><button> 
 				<c:choose> 
 					<c:when test="${followList[i.index]}" > 
 						<c:out default="follow" value="follow"/> 

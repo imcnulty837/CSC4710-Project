@@ -33,6 +33,8 @@ public class ControlServlet extends HttpServlet {
     private AccountDAO accountDAO;
     private ImageDAO imageDAO;
     private FollowDAO followDAO;
+    private TagDAO tagDAO;
+    private ImageTagDAO imageTagDAO;
     private String currentUser;
     
     public ControlServlet() {
@@ -43,6 +45,8 @@ public class ControlServlet extends HttpServlet {
         accountDAO = new AccountDAO(); 
         imageDAO = new ImageDAO();
         followDAO = new FollowDAO();
+        tagDAO = new TagDAO();
+        imageTagDAO = new ImageTagDAO();
         currentUser = "";
     }
     
@@ -71,6 +75,21 @@ public class ControlServlet extends HttpServlet {
         	case "/community":
         		listUsers(request,response);
         		break;
+        	case "/feed":
+        		feedPage(request,response);
+        		break; 
+        	case "/logout":
+        		logout(request,response);
+        		break;
+        	case "/follow":
+        		follow(request,response);
+        		break;
+        	case "/postForm":
+        		postImage(request,response);
+        		break;
+        	case "/delete":
+        		deleteImage(request, response);
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -78,8 +97,40 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
+    private void deleteImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	String url = request.getParameter("url");
+    	imageDAO.delete(new Image(url, currentUser, ""));
+    	feedPage(request,response);
+    }
     
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void postImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+    	String url = request.getParameter("url");
+    	String desc = request.getParameter("description");
+		Image newImg = new Image(url, currentUser, desc);
+		int imageId = -1;
+		int tagId = -1;
+		
+		imageDAO.insert(newImg);
+		imageId = imageDAO.retrieveImageId(currentUser, url);
+		
+		String tagsInput = request.getParameter("tags");
+		if(!tagsInput.isEmpty()) {
+			String[] tags = tagsInput.split(",");
+			for(String s: tags) {
+				tagId = tagDAO.checkExists(new Tag(s));
+				System.out.println(imageId + " " + tagId + " " + s);
+				imageTagDAO.insert(new ImageTag(imageId, tagId));
+			}
+		}
+		feedPage(request, response);
+	}
+
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		currentUser = "";
+		response.sendRedirect("login.jsp");
+	}
+
+	protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
     	//get parameters from our login.jsp textboxes
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
@@ -139,10 +190,31 @@ public class ControlServlet extends HttpServlet {
     }
     
     private void listUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    	//implements the community page by requesting appropriate data to display
     	List<Account> users = accountDAO.listAllPeople();
     	List<Boolean> follows = followDAO.followList(currentUser);
     	request.setAttribute("userList", users);
     	request.setAttribute("followList", follows);
     	request.getRequestDispatcher("CommunityPage.jsp").forward(request, response);
     }
+    
+    private void follow(HttpServletRequest request, HttpServletResponse response) throws SQLException,ServletException, IOException{
+    	boolean status = Boolean.parseBoolean(request.getParameter("status"));
+    	
+    	Follow followObj = new Follow(currentUser,request.getParameter("email"));
+    	try {
+	    	if(status) {
+	    		followDAO.delete(followObj);
+	    	}
+	    	else {
+	    		followDAO.insert(followObj);
+	    	}
+	    	listUsers(request,response);
+    	}
+    	catch(SQLException e) {
+    		System.out.println(e.getMessage());
+    		listUsers(request,response);
+    	}
+    }
+    
 }

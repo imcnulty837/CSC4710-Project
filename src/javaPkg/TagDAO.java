@@ -26,7 +26,7 @@ public class TagDAO {
             }
             connect = (Connection) DriverManager
   			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
-  			          + "useSSL=false&user=john&password=john1234");
+  			          + "useSSL=false&user=root&password=root1234");
             System.out.println(connect);
         }
     }
@@ -77,4 +77,26 @@ public class TagDAO {
 	   	
 	  disconnect();
 	}	
+	
+	public int checkExists(Tag tag) throws SQLException{
+		//check if the tag exists via a select statement
+		int tagId = -1;
+		String sql = "SELECT * from tags where tag = ?";
+		connect_func();
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setString(1, tag.getTag());
+		//execute the query and see if it had results
+		ResultSet results = preparedStatement.executeQuery();
+		if(results.next()){
+			tagId = results.getInt("tagID");
+			preparedStatement.close();
+			disconnect();
+		}
+		else {
+			//if the tag doesn't exist, we'll want it to exist, so insert it
+			insert(tag);
+			tagId = checkExists(tag);
+		}
+		return tagId;
+	}
 }
