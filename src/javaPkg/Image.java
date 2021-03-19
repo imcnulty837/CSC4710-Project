@@ -8,6 +8,7 @@ public class Image {
 	protected String email;
 	protected String url;
 	protected String description;
+	protected int likeCount;
 	
 	public Image() {
 		
@@ -56,6 +57,12 @@ public class Image {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public int getLikeCount() {
+		return this.likeCount;
+	}
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 	
 }

@@ -30,11 +30,12 @@ import java.sql.PreparedStatement;
 
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private AccountDAO accountDAO;
-    private ImageDAO imageDAO;
-    private FollowDAO followDAO;
-    private TagDAO tagDAO;
-    private ImageTagDAO imageTagDAO;
+    private AccountDAO accountDAO = new AccountDAO();
+    private ImageDAO imageDAO = new ImageDAO();
+    private FollowDAO followDAO = new FollowDAO();
+    private TagDAO tagDAO = new TagDAO();
+    private ImageTagDAO imageTagDAO = new ImageTagDAO();
+    private LikeDAO likeDAO = new LikeDAO();
     private String currentUser;
     
     public ControlServlet() {
@@ -194,8 +195,16 @@ public class ControlServlet extends HttpServlet {
     
     private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
     	List<Image> images = imageDAO.getFeed(currentUser);
+    	//List<Integer> likes = null;
+    	for (int i = 0; i < images.size(); i = i+1) {
+    		//likes.add(likeDAO.likeCount(images.get(i).getImageId()));
+    		Image temp = images.get(i);
+    		temp.setLikeCount(likeDAO.likeCount(temp.getImageId()));
+    		images.set(i, temp);
+    	}
     	request.setAttribute("username", currentUser);
-    	request.setAttribute("listImages", images);       
+    	request.setAttribute("listImages", images); 
+    	//request.setAttribute("listLikes", likes);
     	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
     }
     
