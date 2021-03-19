@@ -60,7 +60,6 @@ public class LikeDAO {
     	int count = 0;
     	String sql = "SELECT COUNT(likeSwitch) as total FROM Likes WHERE likeSwitch = true AND imageId = ?";
     	connect_func();
-    	System.out.println("Inside LikeCount");
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
     	preparedStatement.setInt(1, imageid);

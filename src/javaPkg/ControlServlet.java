@@ -94,6 +94,26 @@ public class ControlServlet extends HttpServlet {
         	case "/updateImage":
         		updateImage(request, response);
         		break;
+        	case "/like":
+        		System.out.println(request.getParameter("id"));
+        		if (!likeDAO.check(currentUser, Integer.parseInt(request.getParameter("id")))) {
+        			likeImage(request,response);
+        		}
+        		else {
+        			System.out.println("you have already liked this photo!");
+        			feedPage(request,response);
+        		}
+        		break;
+        	case "/dislike":
+        		System.out.println(request.getParameter("id"));
+        		if (likeDAO.check(currentUser, Integer.parseInt(request.getParameter("id")))) {
+        			dislikeImage(request,response);
+        		}
+        		else {
+        			System.out.println("you already don't like this photo!");
+        			feedPage(request,response);
+        		}
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -101,6 +121,21 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
+    
+    private void likeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	//String url = request.getParameter("url");
+    	int id = Integer.parseInt(request.getParameter("id"));
+    	likeDAO.insert(new Like(currentUser,id));
+    	feedPage(request,response);
+    }
+    
+    private void dislikeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	//String url = request.getParameter("url");
+    	int id = Integer.parseInt(request.getParameter("id"));
+    	likeDAO.delete(new Like(currentUser,id));
+    	feedPage(request,response);
+    }
+    
     private void updateImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
 		String newDesc = request.getParameter("description");
     	String url = request.getParameter("url");
