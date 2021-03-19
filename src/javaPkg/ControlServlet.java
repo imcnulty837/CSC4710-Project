@@ -32,6 +32,10 @@ public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private AccountDAO accountDAO;
     private ImageDAO imageDAO;
+    private FollowDAO followDAO;
+    private TagDAO tagDAO;
+    private ImageTagDAO imageTagDAO;
+    private String currentUser;
     
     public ControlServlet() {
     	
@@ -40,6 +44,10 @@ public class ControlServlet extends HttpServlet {
     public void init() {
         accountDAO = new AccountDAO(); 
         imageDAO = new ImageDAO();
+        followDAO = new FollowDAO();
+        tagDAO = new TagDAO();
+        imageTagDAO = new ImageTagDAO();
+        currentUser = "";
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,6 +72,24 @@ public class ControlServlet extends HttpServlet {
         		System.out.println("Database successfully initialized!");
         		response.sendRedirect("rootView.jsp");
         		break;
+        	case "/community":
+        		listUsers(request,response);
+        		break;
+        	case "/feed":
+        		feedPage(request,response);
+        		break; 
+        	case "/logout":
+        		logout(request,response);
+        		break;
+        	case "/follow":
+        		follow(request,response);
+        		break;
+        	case "/postForm":
+        		postImage(request,response);
+        		break;
+        	case "/delete":
+        		deleteImage(request, response);
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -71,8 +97,40 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
+    private void deleteImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	String url = request.getParameter("url");
+    	imageDAO.delete(new Image(url, currentUser, ""));
+    	feedPage(request,response);
+    }
     
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void postImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+    	String url = request.getParameter("url");
+    	String desc = request.getParameter("description");
+		Image newImg = new Image(url, currentUser, desc);
+		int imageId = -1;
+		int tagId = -1;
+		
+		imageDAO.insert(newImg);
+		imageId = imageDAO.retrieveImageId(currentUser, url);
+		
+		String tagsInput = request.getParameter("tags");
+		if(!tagsInput.isEmpty()) {
+			String[] tags = tagsInput.split(",");
+			for(String s: tags) {
+				tagId = tagDAO.checkExists(new Tag(s));
+				System.out.println(imageId + " " + tagId + " " + s);
+				imageTagDAO.insert(new ImageTag(imageId, tagId));
+			}
+		}
+		feedPage(request, response);
+	}
+
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		currentUser = "";
+		response.sendRedirect("login.jsp");
+	}
+
+	protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
     	//get parameters from our login.jsp textboxes
     	 String username = request.getParameter("username");
     	 String password = request.getParameter("password");
@@ -85,8 +143,9 @@ public class ControlServlet extends HttpServlet {
 			 response.sendRedirect("rootView.jsp");
     	 }
     	 else if(accountDAO.dbLogin(username,password)) {
-    			 System.out.println("Login Successful! Redirecting now!");
-    			 feedPage(request, response, username);
+		 	 currentUser = username;
+			 System.out.println("Login Successful! Redirecting now!");
+			 feedPage(request, response);
     	 }
     	 else {
     		 request.setAttribute("loginFailedStr","Login Failed: Please check your credentials.");
@@ -123,10 +182,39 @@ public class ControlServlet extends HttpServlet {
    	 	}
     }
     
-    private void feedPage(HttpServletRequest request, HttpServletResponse response, String user) throws ServletException, IOException, SQLException{
-    	List<Image> images = imageDAO.getFeed(user);
-    	request.setAttribute("username", user);
+    private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    	List<Image> images = imageDAO.getFeed(currentUser);
+    	request.setAttribute("username", currentUser);
     	request.setAttribute("listImages", images);       
     	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
     }
+    
+    private void listUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    	//implements the community page by requesting appropriate data to display
+    	List<Account> users = accountDAO.listAllPeople();
+    	List<Boolean> follows = followDAO.followList(currentUser);
+    	request.setAttribute("userList", users);
+    	request.setAttribute("followList", follows);
+    	request.getRequestDispatcher("CommunityPage.jsp").forward(request, response);
+    }
+    
+    private void follow(HttpServletRequest request, HttpServletResponse response) throws SQLException,ServletException, IOException{
+    	boolean status = Boolean.parseBoolean(request.getParameter("status"));
+    	
+    	Follow followObj = new Follow(currentUser,request.getParameter("email"));
+    	try {
+	    	if(status) {
+	    		followDAO.delete(followObj);
+	    	}
+	    	else {
+	    		followDAO.insert(followObj);
+	    	}
+	    	listUsers(request,response);
+    	}
+    	catch(SQLException e) {
+    		System.out.println(e.getMessage());
+    		listUsers(request,response);
+    	}
+    }
+    
 }

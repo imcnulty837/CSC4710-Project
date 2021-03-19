@@ -29,7 +29,7 @@ public class ImageDAO {
             }
             connect = (Connection) DriverManager
   			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
-  			          + "useSSL=false&user=john&password=john1234");
+  			          + "useSSL=false&user=root&password=root1234");
             System.out.println(connect);
         }
     }
@@ -70,10 +70,11 @@ public class ImageDAO {
     	preparedStatement.setString(1, email);
     	preparedStatement.setString(2, url);
         ResultSet resultSet = preparedStatement.executeQuery();
-        id = resultSet.getInt("imageId");
-        
+        if(resultSet.next()) {
+        	id = resultSet.getInt("imageId");
+        }
         resultSet.close();
-        statement.close();
+        preparedStatement.close();
         disconnect();
         return id;
     }
@@ -143,7 +144,6 @@ public class ImageDAO {
     	+"where followerEmail = ? or email = ? "
     	+"group by email,url "
     	+"order by ts desc;";
-    	
     	
     	
     	

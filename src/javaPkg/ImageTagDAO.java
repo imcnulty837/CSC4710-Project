@@ -26,7 +26,7 @@ public class ImageTagDAO {
             }
             connect = (Connection) DriverManager
   			      .getConnection("jdbc:mysql://127.0.0.1:3306/testdb?"
-  			          + "useSSL=false&user=john&password=john1234");
+  			          + "useSSL=false&user=root&password=root1234");
             System.out.println(connect);
         }
     }
@@ -51,31 +51,18 @@ public class ImageTagDAO {
         	connect.close();
         }
     }
-	public void insert(ImageTag imagetag) throws SQLException {
-		String sql = "INSERT into imagetag(imageid, tagid) values (?,?)";
-		connect_func();
+	
+	protected void insert(ImageTag it) throws SQLException{
+		  String sql = "INSERT into imageTag(imageID,tagID) values (?, ?)";
+		  connect_func();
 		   	
-		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setInt(1, imagetag.getImageId());
-		preparedStatement.setInt(2, imagetag.getTagId());
+		  preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		  preparedStatement.setInt(1, it.getImageId());
+		  preparedStatement.setInt(2, it.getTagId());
 		   	
-		preparedStatement.executeUpdate();
-		preparedStatement.close();
+		  preparedStatement.executeUpdate();
+		  preparedStatement.close();
 		   	
-		disconnect();
-	} 
-
-	public void delete(ImageTag imagetag) throws SQLException {
-		String sql = "DELETE from imagetag where imageid = ? and tagid = ?";
-		connect_func();
-		   	
-		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setInt(1, imagetag.getImageId());
-		preparedStatement.setInt(2, imagetag.getTagId());
-		   	
-		preparedStatement.executeUpdate();
-		preparedStatement.close();
-		   	
-		disconnect();
-	}	
+		  disconnect();
+	}
 }
