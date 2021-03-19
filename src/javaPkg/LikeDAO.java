@@ -1,4 +1,4 @@
-package dataAccess;
+package javaPkg;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,8 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import dataType.Like;
 
 public class LikeDAO {
 	private static final long serialVersionUID = 1L;

@@ -15,11 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dataAccess.AccountDAO;
-import dataAccess.ImageDAO;
-import dataType.Account;
-import dataType.Image;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;

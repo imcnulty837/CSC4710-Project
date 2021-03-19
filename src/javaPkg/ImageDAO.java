@@ -1,4 +1,4 @@
-package dataAccess;
+package javaPkg;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +9,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import dataType.Image;
 
 public class ImageDAO {
 	private static final long serialVersionUID = 1L;

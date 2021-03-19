@@ -1,4 +1,4 @@
-package dataAccess;
+package javaPkg;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,16 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import dataType.Comment;
-
-public class CommentDAO {
+public class ImageTagDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	public CommentDAO(){}
+	public ImageTagDAO(){}
 	
 	protected void connect_func() throws SQLException {
     	//uses default connection to the database
@@ -53,15 +51,13 @@ public class CommentDAO {
         	connect.close();
         }
     }
-	
-	public void insert(Comment comment) throws SQLException {
-		String sql = "INSERT into comments(imageid, email, comment) values (?,?,?)";
+	public void insert(ImageTag imagetag) throws SQLException {
+		String sql = "INSERT into imagetag(imageid, tagid) values (?,?)";
 		connect_func();
 		   	
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setInt(1, comment.getImageId());
-		preparedStatement.setString(2, comment.getEmail());
-		preparedStatement.setString(3, comment.getComment());
+		preparedStatement.setInt(1, imagetag.getImageId());
+		preparedStatement.setInt(2, imagetag.getTagId());
 		   	
 		preparedStatement.executeUpdate();
 		preparedStatement.close();
@@ -69,13 +65,13 @@ public class CommentDAO {
 		disconnect();
 	} 
 
-	public void delete(Comment comment) throws SQLException {
-		String sql = "DELETE from comments where imageid = ? and email = ?";
+	public void delete(ImageTag imagetag) throws SQLException {
+		String sql = "DELETE from imagetag where imageid = ? and tagid = ?";
 		connect_func();
 		   	
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-		preparedStatement.setInt(1, comment.getImageId());
-		preparedStatement.setString(2, comment.getEmail());
+		preparedStatement.setInt(1, imagetag.getImageId());
+		preparedStatement.setInt(2, imagetag.getTagId());
 		   	
 		preparedStatement.executeUpdate();
 		preparedStatement.close();

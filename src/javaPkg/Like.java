@@ -1,4 +1,4 @@
-package dataType;
+package javaPkg;
 
 public class Like {
 	private String email;

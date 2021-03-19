@@ -1,4 +1,4 @@
-package dataType;
+package javaPkg;
 
 import java.sql.Timestamp;
 

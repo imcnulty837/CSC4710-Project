@@ -1,4 +1,4 @@
-package dataAccess;
+package javaPkg;
 // Originally the PeopleDAO class, updated to manage the Account class
 
 import java.io.BufferedReader;
@@ -15,8 +15,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import dataType.Account;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

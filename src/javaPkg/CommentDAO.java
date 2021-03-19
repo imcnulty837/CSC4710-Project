@@ -1,4 +1,4 @@
-package dataAccess;
+package javaPkg;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,16 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import dataType.Tag;
-
-public class TagDAO {
+public class CommentDAO {
 	private static final long serialVersionUID = 1L;
 	private Connection connect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	
-	public TagDAO(){}
+	public CommentDAO(){}
 	
 	protected void connect_func() throws SQLException {
     	//uses default connection to the database
@@ -53,30 +51,33 @@ public class TagDAO {
         	connect.close();
         }
     }
-
-	public void insert(Tag tag) throws SQLException {
-	  String sql = "INSERT into tags(tag) values (?)";
-	  connect_func();
-	   	
-	  preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-	  preparedStatement.setString(1, tag.getTag());
-	   	
-	  preparedStatement.executeUpdate();
-	  preparedStatement.close();
-	   	
-	  disconnect();
+	
+	public void insert(Comment comment) throws SQLException {
+		String sql = "INSERT into comments(imageid, email, comment) values (?,?,?)";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, comment.getImageId());
+		preparedStatement.setString(2, comment.getEmail());
+		preparedStatement.setString(3, comment.getComment());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
 	} 
 
-	public void delete(Tag tag) throws SQLException {
-	  String sql = "DELETE from tags where tag = ?";
-	  connect_func();
-	   	
-	  preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
-	  preparedStatement.setString(1, tag.getTag());
-	   	
-	  preparedStatement.executeUpdate();
-	  preparedStatement.close();
-	   	
-	  disconnect();
+	public void delete(Comment comment) throws SQLException {
+		String sql = "DELETE from comments where imageid = ? and email = ?";
+		connect_func();
+		   	
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, comment.getImageId());
+		preparedStatement.setString(2, comment.getEmail());
+		   	
+		preparedStatement.executeUpdate();
+		preparedStatement.close();
+		   	
+		disconnect();
 	}	
 }
