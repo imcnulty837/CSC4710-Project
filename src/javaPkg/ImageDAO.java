@@ -121,13 +121,12 @@ public class ImageDAO {
      * @param image, an Image object
      */
     public void update(Image image) throws SQLException {
-    	String sql = "Update Image set description = ? where email = ? and url = ?";
+    	String sql = "Update Image set description = ? where url = ?";
     	connect_func();
     	
     	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
     	preparedStatement.setString(1, image.getDescription());
-    	preparedStatement.setString(2, image.getEmail());
-    	preparedStatement.setString(3, image.getUrl());
+    	preparedStatement.setString(2, image.getUrl());
     	
     	preparedStatement.executeUpdate();
     	preparedStatement.close();

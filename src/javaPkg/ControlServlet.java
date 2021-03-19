@@ -90,6 +90,9 @@ public class ControlServlet extends HttpServlet {
         	case "/delete":
         		deleteImage(request, response);
         		break;
+        	case "/updateImage":
+        		updateImage(request, response);
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -97,6 +100,13 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
+    private void updateImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+		String newDesc = request.getParameter("description");
+    	String url = request.getParameter("url");
+		imageDAO.update(new Image(url, currentUser, newDesc));
+    	feedPage(request,response);
+    }
+    
     private void deleteImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
     	String url = request.getParameter("url");
     	imageDAO.delete(new Image(url, currentUser, ""));
