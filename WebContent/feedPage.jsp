@@ -41,8 +41,15 @@
 			<h4>posted by ${Image.email} at <time>${Image.timestamp}</time></h4>
 			<img src=${Image.url} alt="image">
 			<p>Likes: ${Image.likeCount}, Description: ${Image.description}</p>
-			<form action="like?url=${Image.url}&id=${Image.imageId}" method="post"><input type="submit" value="Like"/></form>
-			<form action="dislike?url=${Image.url}&id=${Image.imageId}" method="post"><input type="submit" value="Unlike"/></form>
+			<c:choose>
+				<c:when test = "${Image.likeSwitch}">
+					<form action="dislike?url=${Image.url}&id=${Image.imageId}" method="post"><input type="submit" value="Unlike"/></form>
+					
+				</c:when>
+				<c:otherwise>
+					<form action="like?url=${Image.url}&id=${Image.imageId}" method="post"><input type="submit" value="Like"/></form>
+				</c:otherwise>
+			</c:choose>
 			<c:if test="${Image.email == username }">
 				<form action="delete?url=${Image.url}" method="post"><input type="submit" value="Delete Image"/></form>
 				<form action="updateImage?url=${Image.url}" method="post"><input type="text" name="description" size="45"><input type="submit" value="Update Image"/></form> 

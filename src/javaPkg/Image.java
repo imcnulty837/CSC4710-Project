@@ -9,6 +9,7 @@ public class Image {
 	protected String url;
 	protected String description;
 	protected int likeCount;
+	protected boolean likeSwitch;
 	
 	public Image() {
 		
@@ -20,12 +21,13 @@ public class Image {
 		this.email = email;
 	}
 	
-	public Image(int imageId,  Timestamp timestamp, String email, String url, String description) {
+	public Image(int imageId,  Timestamp timestamp, String email, String url, String description, boolean likeSwitch) {
 		this.url = url;
 		this.imageId = imageId;
 		this.description = description;
 		this.timestamp = timestamp;
 		this.email = email;
+		this.likeSwitch = likeSwitch;
 	}
 	
 	public String getUrl() {
@@ -64,5 +66,11 @@ public class Image {
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
 	}
-	
+	public boolean isLikeSwitch() {
+		return likeSwitch;
+	}
+
+	public void setLikeSwitch(boolean likeSwitch) {
+		this.likeSwitch = likeSwitch;
+	}
 }
