@@ -91,6 +91,30 @@ public class AccountDAO {
     	//set your working directory to match the project folder
     	batchSqlExecuter("src/sqlPkg/databaseInit.sql");
     	batchSqlExecuter("src/sqlPkg/populateTables.sql");
+    	
+    	String constraintOne = "create trigger five_posts_a_day before insert on image for each row "
+    			+ "begin "
+    			+ "if((select count(ts) from image where ts > DATE_SUB(now(), interval 1 day)) and email = new.email > 5) then "
+    			+ "signal sqlstate '45000' set message_text = 'no more than five posts per day'; "
+    			+ "end if; "
+    			+ "end";
+
+    	System.out.println(constraintOne);
+    	String constraintTwo = "create trigger three_likes_a_day before insert"
+    			+ "on likes for each row"
+    			+ "begin"
+    			+ "if(select count(likeSwitch) from likes l join image i on l.email = i.email where l.email = new.email) > 3 then"
+    			+ "signal sqlstate '45000' set message_text = \'no more than three likes per day\'; "
+    			+ "end if;"
+    			+ "end";
+    	
+    	System.out.println(constraintTwo);
+    	connect_func("root","root1234");
+    	statement = connect.createStatement();
+    	statement.executeUpdate(constraintOne);
+    	statement.executeUpdate(constraintTwo);
+    	statement.close();
+    	disconnect();
     }
     
     public void batchSqlExecuter(String file) throws SQLException, FileNotFoundException, IOException{
@@ -145,7 +169,6 @@ public class AccountDAO {
             listPeople.add(people);
         }        
         resultSet.close();
-        statement.close();         
         disconnect();        
         return listPeople;
     }
