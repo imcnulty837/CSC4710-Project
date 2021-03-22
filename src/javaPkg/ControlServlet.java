@@ -118,7 +118,7 @@ public class ControlServlet extends HttpServlet {
         }
         catch(Exception ex) {
         	System.out.println(ex.getMessage());
-        	throw new ServletException(ex);
+        	//throw new ServletException(ex);
         }
     }
     
@@ -150,6 +150,7 @@ public class ControlServlet extends HttpServlet {
     }
     
     private void postImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+    	System.out.println(currentUser);
     	String url = request.getParameter("url");
     	String desc = request.getParameter("description");
 		Image newImg = new Image(url, currentUser, desc);
@@ -213,7 +214,7 @@ public class ControlServlet extends HttpServlet {
 	   	 		System.out.println("Registration Successful! Added to database, redirecting to Account View!");
 	   	 		Account account = new Account(username, firstName, lastName, password, birthday, gender);
 	   	 		accountDAO.insert(account);
-	   	 		response.sendRedirect("feedPage.jsp");
+	   	 		response.sendRedirect("login.jsp");
    	 		}
 	   	 	else {
 	   	 		System.out.println("Username taken, please enter new username");
