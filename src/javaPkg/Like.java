@@ -4,6 +4,10 @@ public class Like {
 	private String email;
 	private int imageId;
 	private boolean likeSwitch;
+	public Like(String email, int imageId) {
+		this.email = email;
+		this.imageId = imageId;
+	}
 	public Like(String email, int imageId, boolean likeSwitch) {
 		this.email = email;
 		this.imageId = imageId;

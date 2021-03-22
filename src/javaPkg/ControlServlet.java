@@ -30,11 +30,12 @@ import java.sql.PreparedStatement;
 
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private AccountDAO accountDAO;
-    private ImageDAO imageDAO;
-    private FollowDAO followDAO;
-    private TagDAO tagDAO;
-    private ImageTagDAO imageTagDAO;
+    private AccountDAO accountDAO = new AccountDAO();
+    private ImageDAO imageDAO = new ImageDAO();
+    private FollowDAO followDAO = new FollowDAO();
+    private TagDAO tagDAO = new TagDAO();
+    private ImageTagDAO imageTagDAO = new ImageTagDAO();
+    private LikeDAO likeDAO = new LikeDAO();
     private String currentUser;
     
     public ControlServlet() {
@@ -90,6 +91,29 @@ public class ControlServlet extends HttpServlet {
         	case "/delete":
         		deleteImage(request, response);
         		break;
+        	case "/updateImage":
+        		updateImage(request, response);
+        		break;
+        	case "/like":
+        		System.out.println(request.getParameter("id"));
+        		if (!likeDAO.check(currentUser, Integer.parseInt(request.getParameter("id")))) {
+        			likeImage(request,response);
+        		}
+        		else {
+        			System.out.println("you have already liked this photo!");
+        			feedPage(request,response);
+        		}
+        		break;
+        	case "/dislike":
+        		System.out.println(request.getParameter("id"));
+        		if (likeDAO.check(currentUser, Integer.parseInt(request.getParameter("id")))) {
+        			dislikeImage(request,response);
+        		}
+        		else {
+        			System.out.println("you already don't like this photo!");
+        			feedPage(request,response);
+        		}
+        		break;
         	}
         }
         catch(Exception ex) {
@@ -97,6 +121,28 @@ public class ControlServlet extends HttpServlet {
         	throw new ServletException(ex);
         }
     }
+    
+    private void likeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	//String url = request.getParameter("url");
+    	int id = Integer.parseInt(request.getParameter("id"));
+    	likeDAO.insert(new Like(currentUser,id));
+    	feedPage(request,response);
+    }
+    
+    private void dislikeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+    	//String url = request.getParameter("url");
+    	int id = Integer.parseInt(request.getParameter("id"));
+    	likeDAO.delete(new Like(currentUser,id));
+    	feedPage(request,response);
+    }
+    
+    private void updateImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+		String newDesc = request.getParameter("description");
+    	String url = request.getParameter("url");
+		imageDAO.update(new Image(url, currentUser, newDesc));
+    	feedPage(request,response);
+    }
+    
     private void deleteImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
     	String url = request.getParameter("url");
     	imageDAO.delete(new Image(url, currentUser, ""));
@@ -184,8 +230,16 @@ public class ControlServlet extends HttpServlet {
     
     private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
     	List<Image> images = imageDAO.getFeed(currentUser);
+    	//List<Integer> likes = null;
+    	for (int i = 0; i < images.size(); i = i+1) {
+    		//likes.add(likeDAO.likeCount(images.get(i).getImageId()));
+    		Image temp = images.get(i);
+    		temp.setLikeCount(likeDAO.likeCount(temp.getImageId()));
+    		images.set(i, temp);
+    	}
     	request.setAttribute("username", currentUser);
-    	request.setAttribute("listImages", images);       
+    	request.setAttribute("listImages", images); 
+    	//request.setAttribute("listLikes", likes);
     	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
     }
     
