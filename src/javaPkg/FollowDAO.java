@@ -151,4 +151,23 @@ public class FollowDAO {
 		return list;
 	}
    
+	public List<String> commonUsers(String userOne, String userTwo) throws SQLException{
+		List<String> list = new ArrayList<String>();
+		String sql =  "select followeeEmail "
+				+ "from follows f1 "
+				+ "where followerEmail = ? and followeeEmail in ("
+				+ "select followeeEmail "
+				+ "from follows "
+				+ "where followerEmail = ?"
+				+ ");";
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setString(1, userOne);
+		preparedStatement.setString(2, userTwo);
+		ResultSet results = preparedStatement.executeQuery();
+		while(results.next()) {
+			list.add(results.getString("followeeEmail"));
+		}
+		return list;	
+	}
+	
 }
