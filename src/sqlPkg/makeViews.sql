@@ -43,3 +43,58 @@ select *
 from follows
 group by followeeEmail
 having count(followeeEmail) >= 5;
+
+-- topTags: List those tags used by at least 3 people 
+select distinctrow t.tag from tags t, imagetag i
+create view topTags as
+where t.tagId = i.tagId
+and i.tagId in (
+	select tagId
+    from imageTag
+    having count(imageId) >= 3
+);
+
+-- positiveUsers: List those users that like every post of the users they follow
+create view positiveUsers as
+select distinctrow u.email from user u, image i
+where i.email in (
+	select followerEmail
+    from follows
+    where u.email = followeeEmail
+) and i.imageId in (
+	select imageId
+    from likes
+    having count(imageId) >= 1
+);
+
+-- poorImages: List those images with no likes and no comments
+-- Not sure if this one works
+create view poorImages as 
+select * from image
+where imageId in (
+	select imageId 
+    from likes
+    group by imageId
+    having count(imageId) = 0
+) and imageId in (
+    select c.imageId
+    from comments c
+    where c.comment = ""
+);
+
+-- inactiveUsers: List those users who have not posted an image, followed a user, left a like, or commented
+create view inactiveUsers as
+select distinctrow email from user
+where email not in (
+	select email from image
+) and email not in (
+	select followeeEmail from follows
+) and email not in (
+	select email from likes
+) and email not in (
+	select i.email from image i
+    where i.imageId in (
+		select c.imageId from comments c
+        where c.comment = ""
+	)
+);
