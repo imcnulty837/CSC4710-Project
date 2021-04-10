@@ -284,13 +284,15 @@ public class ControlServlet extends HttpServlet {
     
     private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
     	List<Image> images = imageDAO.getFeed(currentUser);
-    	//List<Integer> likes = null;
+    	for(Image i : images) {
+    		i.setTags(imageTagDAO.getTags(i.getImageId()));
+    	}
     	for (int i = 0; i < images.size(); i = i+1) {
-    		//likes.add(likeDAO.likeCount(images.get(i).getImageId()));
     		Image temp = images.get(i);
     		temp.setLikeCount(likeDAO.likeCount(temp.getImageId()));
     		images.set(i, temp);
     	}
+    	
     	request.setAttribute("username", currentUser);
     	request.setAttribute("listImages", images); 
     	//request.setAttribute("listLikes", likes);

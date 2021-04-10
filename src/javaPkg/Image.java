@@ -1,6 +1,8 @@
 package javaPkg;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Image {
 	protected int imageId;
@@ -10,18 +12,21 @@ public class Image {
 	protected String description;
 	protected int likeCount;
 	protected boolean likeSwitch;
+	protected String tags;
 	
 	public Image() {
 		
 	}
 	
 	public Image(String url, String email, String description) {
+		this.tags = "";
 		this.url = url;
 		this.description = description;
 		this.email = email;
 	}
 	
 	public Image(int imageId,  Timestamp timestamp, String email, String url, String description, boolean likeSwitch) {
+		this.tags = "";
 		this.url = url;
 		this.imageId = imageId;
 		this.description = description;
@@ -31,6 +36,7 @@ public class Image {
 	}
 	
 	public Image(int imageId,  Timestamp timestamp, String email, String url, String description, int count, boolean likeSwitch) {
+		this.tags = "";
 		this.url = url;
 		this.imageId = imageId;
 		this.description = description;
@@ -82,5 +88,22 @@ public class Image {
 
 	public void setLikeSwitch(boolean likeSwitch) {
 		this.likeSwitch = likeSwitch;
+	}
+	
+	public void setTags(List<Tag> tagData) {
+		if(tagData.size() > 0) {
+			this.tags = tagData.get(0).getTag();
+			for(int x = 1; x < tagData.size(); ++x) {
+				tags += ", ";
+				tags += tagData.get(x).getTag();
+			}
+		}
+		else {
+			tags = "";
+		}
+	}
+	
+	public String getTags() {
+		return tags;
 	}
 }
