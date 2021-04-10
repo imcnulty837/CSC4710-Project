@@ -45,8 +45,8 @@ group by followeeEmail
 having count(followeeEmail) >= 5;
 
 -- topTags: List those tags used by at least 3 people 
-select distinctrow t.tag from tags t, imagetag i
 create view topTags as
+select distinctrow t.tag from tags t, imagetag i
 where t.tagId = i.tagId
 and i.tagId in (
 	select tagId

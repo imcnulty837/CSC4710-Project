@@ -93,15 +93,19 @@ public class ControlServlet extends HttpServlet {
         		break;
         	case "/topUsers":
         		getUserList(request, response, "topUsers");
+        		request.setAttribute("view", "Top Users!");
         		break;
         	case "/popularUsers":
         		getUserList(request, response, "popularUsers");
+        		request.setAttribute("view", "Popular Users!");
         		break;
         	case "/positiveUsers":
         		getUserList(request, response, "positiveUsers");
+        		request.setAttribute("view", "Positive Users!");
         		break;
         	case "/inactiveUsers":
         		getUserList(request, response, "inactiveUsers");
+        		request.setAttribute("view", "Inactive Users! :(");
         		break;
         	case "/logout":
         		logout(request,response);
@@ -295,8 +299,7 @@ public class ControlServlet extends HttpServlet {
     private void getUserList(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
     	List<Account> users = accountDAO.getUserView(view);
     	request.setAttribute("userList", users);
-    	// Might need another jsp file (oh boy)
-    	request.getRequestDispatcher("CommunityPage.jsp").forward(request, response);
+    	request.getRequestDispatcher("userView.jsp").forward(request, response);
     }
     
     private void follow(HttpServletRequest request, HttpServletResponse response) throws SQLException,ServletException, IOException{
