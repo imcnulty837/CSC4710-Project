@@ -71,15 +71,12 @@ where i.email in (
 -- Not sure if this one works
 create view poorImages as 
 select * from image
-where imageId in (
-	select imageId 
-    from likes
-    group by imageId
-    having count(imageId) = 0
-) and imageId in (
-    select c.imageId
-    from comments c
-    where c.comment = ""
+where imageId not in (
+	select c.imageId 
+    from likes l
+    inner join comments c
+    on c.imageId = l.imageId
+    group by c.imageId
 );
 
 -- inactiveUsers: List those users who have not posted an image, followed a user, left a like, or commented
