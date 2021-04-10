@@ -11,10 +11,20 @@
 		</form>
 		<a href="login.jsp" target="_self">Logout</a><br><br>
 		
+		<h1>Image Views!</h1>
 		<form action="coolImages" method="post"><input type="submit" value="Cool Images" /></form>
-		<form action="recentImages" method="post"><input type="submit" value="recently posted" /></form>
-		<form action="viralImages" method="post"><input type="submit" value="viral Images" /></form>
-		<form action="poorImages" method="post"><input type="submit" value="poor Images" /></form>
+		<form action="recentImages" method="post"><input type="submit" value="Recently Posted" /></form>
+		<form action="viralImages" method="post"><input type="submit" value="Viral Images" /></form>
+		<form action="poorImages" method="post"><input type="submit" value="Poor Images" /></form>
+		
+		<h1>User Views!</h1>
+		<form action="topUsers" method="post"><input type="submit" value="Top Users" /></form>
+		<form action="popularUsers" method="post"><input type="submit" value="Popular Users" /></form>
+		<form action="positiveUsers" method="post"><input type="submit" value="Positive Users" /></form>
+		<form action="inactiveUsers" method="post"><input type="submit" value="Inactive Users" /></form>
+		<form action="commonUsers" method="post"><input type="submit" value="Common Users"></form>
+		
+		<form action="topTags" method="post"><input type="submit" value="Top Tags!"></form>
 		
 		<c:forEach items="${listImages}" var="Image">
 			<h4>posted by ${Image.email} at <time>${Image.timestamp}</time></h4>

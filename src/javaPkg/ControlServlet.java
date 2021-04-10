@@ -79,6 +79,9 @@ public class ControlServlet extends HttpServlet {
         	case "/feed":
         		feedPage(request,response);
         		break; 
+        	case "/root":
+        		rootPage(request,response, "");
+        		break;
         	case "/coolImages":
         		rootPage(request,response, "coolImages");
         		break;
