@@ -46,13 +46,13 @@ create view popularUsers as
 
 -- topTags: List those tags used by at least 3 people 
 create view topTags as
-    select distinctrow t.tag from tags t, imagetag i
-    where t.tagId = i.tagId
-    and i.tagId in (
-	select tagId
-    from imageTag
-    having count(imageId) >= 3
-);
+	select distinctrow t.tag from tags t, imagetag i
+	where t.tagId = i.tagId
+	and i.tagId in (
+		select tagId
+		from imageTag
+		having count(imageId) >= 3
+	);
 
 -- positiveUsers: List those users that like every post of the users they follow
 create view positiveUsers as

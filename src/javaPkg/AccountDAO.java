@@ -307,13 +307,13 @@ public class AccountDAO {
          
         while (resultSet.next()) {
             String email = resultSet.getString("email");
-            String firstName = resultSet.getString("firstName");
-            String lastName = resultSet.getString("lastName");
-            String password = resultSet.getString("password");
-            String birthday = resultSet.getString("birthday");
-            String gender = resultSet.getString("gender");
+            //String firstName = resultSet.getString("firstName");
+            //String lastName = resultSet.getString("lastName");
+            //String password = resultSet.getString("password");
+            //String birthday = resultSet.getString("birthday");
+            //String gender = resultSet.getString("gender");
              
-            Account people = new Account(email,firstName, lastName, password, birthday,gender);
+            Account people = new Account(email);
             listPeople.add(people);
         }        
         resultSet.close();
