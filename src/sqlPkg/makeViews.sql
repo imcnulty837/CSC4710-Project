@@ -11,7 +11,7 @@ where imageId in (
 );
 
 -- images that have been posted in the last day
-create view NewImages as
+create view recentImages as
 select * from image
 where ts between date_sub(now(), interval 1 day) and now();
 
