@@ -294,6 +294,29 @@ public class AccountDAO {
     	return torf;
     }
     
+    public List<Account> getUserView(String view) throws SQLException {
+        List<Account> listPeople = new ArrayList<Account>();        
+        String sql = "SELECT * FROM " + view;      
+        connect_func();      
+        statement =  (Statement) connect.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+         
+        while (resultSet.next()) {
+            String email = resultSet.getString("email");
+            String firstName = resultSet.getString("firstName");
+            String lastName = resultSet.getString("lastName");
+            String password = resultSet.getString("password");
+            String birthday = resultSet.getString("birthday");
+            String gender = resultSet.getString("gender");
+             
+            Account people = new Account(email,firstName, lastName, password, birthday,gender);
+            listPeople.add(people);
+        }        
+        resultSet.close();
+        disconnect();        
+        return listPeople;
+    }
+    
     public void init_backup() throws SQLException, FileNotFoundException, IOException{
     	//This is a backup database initialize function just in case something goes wrong with the batch executer or database initialize file.
     	//generally this will never get called but it never hurts to have a backup plan ;D
