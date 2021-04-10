@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageTagDAO {
 	private static final long serialVersionUID = 1L;
@@ -64,5 +66,24 @@ public class ImageTagDAO {
 		  preparedStatement.close();
 		   	
 		  disconnect();
+	}
+	
+	public List<Tag> getTags(int imageId) throws SQLException{
+		List<Tag> tags = new ArrayList<Tag>();
+		String sql = "select * from imageTag it " +
+					 "join tags t on it.tagId = t.tagId " +
+					 "where imageId = ?;";
+		connect_func("root","root1234");
+		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+		preparedStatement.setInt(1, imageId);
+		ResultSet rs = preparedStatement.executeQuery();
+		
+		while(rs.next()){
+			String t = rs.getString("tag");
+			tags.add(new Tag(t));
+		}
+		preparedStatement.close();
+		disconnect();
+		return tags;
 	}
 }
