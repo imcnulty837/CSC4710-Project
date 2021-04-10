@@ -79,6 +79,15 @@ public class ControlServlet extends HttpServlet {
         	case "/feed":
         		feedPage(request,response);
         		break; 
+        	case "/coolImages":
+        		feedPageView(request,response, "coolImages");
+        		break;
+        	case "/recentImages":
+        		feedPageView(request, response, "recentImages");
+        		break;
+        	case "/viralImages":
+        		feedPageView(request, response, "viralImages");
+        		break;
         	case "/logout":
         		logout(request,response);
         		break;
@@ -121,8 +130,23 @@ public class ControlServlet extends HttpServlet {
         	//throw new ServletException(ex);
         }
     }
-    
-    private void likeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
+
+	private void feedPageView(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
+    	List<Image> images = imageDAO.getImageView(view, currentUser);
+    	//List<Integer> likes = null;
+    	for (int i = 0; i < images.size(); i = i+1) {
+    		//likes.add(likeDAO.likeCount(images.get(i).getImageId()));
+    		Image temp = images.get(i);
+    		temp.setLikeCount(likeDAO.likeCount(temp.getImageId()));
+    		images.set(i, temp);
+    	}
+    	request.setAttribute("username", currentUser);
+    	request.setAttribute("listImages", images); 
+    	//request.setAttribute("listLikes", likes);
+    	request.getRequestDispatcher("feedPage.jsp").forward(request,response);
+    }
+
+	private void likeImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException{
     	//String url = request.getParameter("url");
     	int id = Integer.parseInt(request.getParameter("id"));
     	likeDAO.insert(new Like(currentUser,id));

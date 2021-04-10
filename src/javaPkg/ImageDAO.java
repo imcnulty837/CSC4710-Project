@@ -172,16 +172,21 @@ public class ImageDAO {
     	return images;
     }
     
-    public List<Image> getCool() throws SQLException{
+    public List<Image> getImageView(String view, String user) throws SQLException{
     	List<Image> images = new ArrayList<Image>();
     	connect_func("root","root1234");
-    	String sql = "Select";
+    	String sql = "select i.imageID, ts, i.email, url, description, followerEmail, followeeEmail, if(likeSwitch = 1, true, false) as liked from " + view + " i "
+    			+ "left join follows on i.email = followeeEmail "
+    			+ "left join likes l on i.imageID = l.imageID and l.email = ?"
+    			+ "where followerEmail = ? or i.email = ? "
+    			+ "group by i.email,url "
+    			+ "order by ts desc;";
     	
     	preparedStatement = connect.prepareStatement(sql);
-    	//preparedStatement.setString(1, user);
-    	//preparedStatement.setString(2, user);
-    	//preparedStatement.setString(3, user);
-    	//ResultSet resultSet = preparedStatement.executeQuery();
+    	preparedStatement.setString(1, user);
+    	preparedStatement.setString(2, user);
+    	preparedStatement.setString(3, user);
+    	ResultSet resultSet = preparedStatement.executeQuery();
     	
     	while(resultSet.next()) {
     		int id = resultSet.getInt("imageId");
