@@ -30,6 +30,16 @@ public class Image {
 		this.likeSwitch = likeSwitch;
 	}
 	
+	public Image(int imageId,  Timestamp timestamp, String email, String url, String description, int count, boolean likeSwitch) {
+		this.url = url;
+		this.imageId = imageId;
+		this.description = description;
+		this.timestamp = timestamp;
+		this.email = email;
+		this.likeCount = count;
+		this.likeSwitch = likeSwitch;
+	}
+	
 	public String getUrl() {
 		return url;
 	}

@@ -80,16 +80,16 @@ public class ControlServlet extends HttpServlet {
         		feedPage(request,response);
         		break; 
         	case "/coolImages":
-        		feedPageView(request,response, "coolImages");
+        		rootPage(request,response, "coolImages");
         		break;
         	case "/recentImages":
-        		feedPageView(request, response, "recentImages");
+        		rootPage(request, response, "recentImages");
         		break;
         	case "/viralImages":
-        		feedPageView(request, response, "viralImages");
+        		rootPage(request, response, "viralImages");
         		break;
         	case "/poorImages":
-        		feedPageView(request, response, "poorImages");
+        		rootPage(request, response, "poorImages");
         		break;
         	case "/topUsers":
         		getUserList(request, response, "topUsers");
@@ -230,7 +230,7 @@ public class ControlServlet extends HttpServlet {
 			 System.out.println("Login Successful! Redirecting now! Welcome Boss");
 			 HttpSession session = request.getSession();
 			 session.setAttribute("username", username);
-			 response.sendRedirect("rootView.jsp");
+			 rootPage(request, response, "");
     	 }
     	 else if(accountDAO.dbLogin(username,password)) {
 		 	 currentUser = username;
@@ -270,6 +270,13 @@ public class ControlServlet extends HttpServlet {
    		 request.setAttribute("errorTwo","Registration failed: Password and Password Confirmation do not match.");
    		 request.getRequestDispatcher("register.jsp").forward(request, response);
    	 	}
+    }
+    
+    private void rootPage(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
+    	System.out.println("made it here");
+    	List<Image> images = imageDAO.getRootView(view);
+    	request.setAttribute("listImages", images);
+    	request.getRequestDispatcher("rootView.jsp").forward(request, response);
     }
     
     private void feedPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
