@@ -133,6 +133,37 @@ public class ImageDAO {
     	disconnect();
     }
     
+    public List<Image> getRootView(String view) throws SQLException{
+    	List<Image> images = new ArrayList<Image>();
+    	connect_func("root","root1234");
+    	
+    	if(view.isEmpty()) {
+    		view = "image";
+    	}
+    	
+    	String sql = "select *, count(l.imageId) as ct from " + view + " i " +
+    				"left join likes l on i.imageId = l.imageId " +
+    				"group by i.imageId " +
+    				"order by ts desc;";
+    	
+    	preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    	
+    	ResultSet resultSet = preparedStatement.executeQuery();
+    	
+    	while(resultSet.next()) {
+    		int id = resultSet.getInt("imageId");
+    		Timestamp t = resultSet.getTimestamp("ts");
+    		String em = resultSet.getString("email");
+    		String url = resultSet.getString("url");
+    		String descript = resultSet.getString("description");
+    		int likeCount = resultSet.getInt("ct");
+    		
+    		images.add(new Image(id, t, em, url, descript, likeCount, false));
+    	}
+    	disconnect();
+    	return images;
+    	
+    }
     public List<Image> getFeed(String user) throws SQLException{
     	List<Image> images = new ArrayList<Image>();
     	connect_func("root","root1234");
@@ -172,6 +203,32 @@ public class ImageDAO {
     	return images;
     }
     
+    public List<Image> getImageView(String view) throws SQLException{
+    	List<Image> images = new ArrayList<Image>();
+    	connect_func("root","root1234");
+    	String sql = "select i.imageID, ts, i.email, url, description, followerEmail, followeeEmail, if(likeSwitch = 1, true, false) as liked from " + view + " i "
+    			+ "left join follows on i.email = followeeEmail "
+    			+ "left join likes l on i.imageID = l.imageID and l.email = ?"
+    			+ "where followerEmail = ? or i.email = ? "
+    			+ "group by i.email,url "
+    			+ "order by ts desc;";
+    	
+    	preparedStatement = connect.prepareStatement(sql);
+    	ResultSet resultSet = preparedStatement.executeQuery();
+    	
+    	while(resultSet.next()) {
+    		int id = resultSet.getInt("imageId");
+    		Timestamp t = resultSet.getTimestamp("ts");
+    		String em = resultSet.getString("email");
+    		String url = resultSet.getString("url");
+    		String descript = resultSet.getString("description");
+    		boolean likeSwitch = resultSet.getBoolean("liked");
+    		
+    		images.add(new Image(id, t, em, url, descript, likeSwitch));
+    	}
+    	disconnect();
+    	return images;
+    }
     public List<Image> getImageView(String view, String user) throws SQLException{
     	List<Image> images = new ArrayList<Image>();
     	connect_func("root","root1234");

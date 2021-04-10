@@ -11,10 +11,6 @@
 		<form action="community" method="post"><input type="submit" value="Community Page"/></form>
 		<form action="logout" method="post"><input type="submit" value="logout" /></form>
 		<h1>Welcome ${username}</h1><br>
-		<form action="feed" method="post"><input type="submit" value="Normal View" /></form>
-		<form action="coolImages" method="post"><input type="submit" value="Cool Images" /></form>
-		<form action="recentImages" method="post"><input type="submit" value="recently posted" /></form>
-		<form action="viralImages" method="post"><input type="submit" value="viral Images" /></form>
 		<br>
 		<button onclick="postForm()">post an image</button>
 		<div id="postImageForm">

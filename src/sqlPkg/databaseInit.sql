@@ -1,6 +1,7 @@
 create database if not exists testdb;
 use testdb;
 
+drop view if exists coolImages, recentImages, viralImages, topUsers, popularUsers, topTags, positiveUsers, poorImages, inactiveUsers;
 drop trigger if exists five_posts_a_day;
 drop trigger if exists three_likes_a_day;
 drop table if exists ImageTag;
@@ -72,11 +73,3 @@ create table if not exists likes(
     Foreign key (imageID) references image(imageid) on delete cascade,
     primary key (email, imageId)
 );
-
-/*
-create view feedPage
-create view communityPage
-create view profilePage
-	On each day, a user can post at most five images. 
-	On each day, a user can give at most 3 likes. 
-*/

@@ -91,6 +91,7 @@ public class AccountDAO {
     	//set your working directory to match the project folder
     	batchSqlExecuter("src/sqlPkg/databaseInit.sql");
     	batchSqlExecuter("src/sqlPkg/populateTables.sql");
+    	batchSqlExecuter("src/sqlPkg/makeViews.sql");
     	
     	String constraintOne = "create trigger five_posts_a_day before insert on image for each row "
     			+ "begin "
@@ -129,7 +130,10 @@ public class AccountDAO {
 	    	BufferedReader reader = new BufferedReader(myFile);
 			String line = reader.readLine();
 			while(line != null) {
-				initScript.append(line);
+				System.out.println(line);
+				if(!line.contains("--")) {
+					initScript.append(line);
+				}
 				line = reader.readLine();
 			}
 			reader.close();
