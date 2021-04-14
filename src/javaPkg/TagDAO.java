@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TagDAO {
 	private static final long serialVersionUID = 1L;
@@ -99,4 +101,24 @@ public class TagDAO {
 		}
 		return tagId;
 	}
+	
+	public List<Tag> getView() throws SQLException{
+		List<Tag> listTag = new ArrayList<Tag>();
+		String sql = "SELECT * FROM topTags";
+		connect_func();
+		statement = (Statement) connect.createStatement();
+		ResultSet resultSet = statement.executeQuery(sql);
+		
+		while (resultSet.next()) {
+			String tagName = resultSet.getString("tag");
+			
+			Tag tag = new Tag(tagName);
+			listTag.add(tag);
+		}
+		
+		resultSet.close();
+		disconnect();
+		return listTag;
+	}
+	
 }

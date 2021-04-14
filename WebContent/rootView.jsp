@@ -23,7 +23,30 @@
 		<form action="positiveUsers" method="post"><input type="submit" value="Positive Users" /></form>
 		<form action="inactiveUsers" method="post"><input type="submit" value="Inactive Users" /></form>
 		<form action="commonUsers" method="post"><input type="submit" value="Common Users"></form>
+		<table>	
+			<tr>
+			    <td class = "select">User One:</td>
+			    <td>
+			    <select name="userOne">        
+			        <c:forEach items="${fullUserList}" var="User">
+			            <option value="${User.email}">${User.email}</option>	
+			        </c:forEach>
+			    </select>
+			    </td>   
+			</tr>
+			<tr>
+			    <td class = "select">User Two:</td>
+			    <td>
+			    <select name="userTwo">        
+			        <c:forEach items="${fullUserList}" var="User">
+			            <option value="${User.email}">${User.email}</option>	
+			        </c:forEach>
+			    </select>
+			    </td>   
+			</tr>
+		</table>
 		
+		<h1>Tag Views!</h1>
 		<form action="topTags" method="post"><input type="submit" value="Top Tags!"></form>
 		
 		<c:forEach items="${listImages}" var="Image">

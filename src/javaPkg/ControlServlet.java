@@ -110,6 +110,13 @@ public class ControlServlet extends HttpServlet {
         		getUserList(request, response, "inactiveUsers");
         		request.setAttribute("view", "Inactive Users! :(");
         		break;
+        	case "/commonUsers":
+        		getUserList(request, response, "commonUsers");
+        		request.setAttribute("view", "Common Users!");
+        		break;
+        	case "/topTags":
+        		getTopTags(request, response);
+        		break;
         	case "/logout":
         		logout(request,response);
         		break;
@@ -279,6 +286,7 @@ public class ControlServlet extends HttpServlet {
     	System.out.println("made it here");
     	List<Image> images = imageDAO.getRootView(view);
     	request.setAttribute("listImages", images);
+		request.setAttribute("fullUserList", accountDAO.listAllPeople());
     	request.getRequestDispatcher("rootView.jsp").forward(request, response);
     }
     
@@ -309,9 +317,22 @@ public class ControlServlet extends HttpServlet {
     }
     
     private void getUserList(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
-    	List<Account> users = accountDAO.getUserView(view);
-    	request.setAttribute("userList", users);
+    	if (view.equals("commonUsers")) {
+    		String userOne = request.getParameter("userOne");
+    		String userTwo = request.getParameter("userTwo");
+        	List<String> users = followDAO.commonUsers(userOne, userTwo);
+    		request.setAttribute("userList", users);
+    	} else {
+    		List<Account> users = accountDAO.getUserView(view);
+    		request.setAttribute("userList", users);
+    	}
     	request.getRequestDispatcher("userView.jsp").forward(request, response);
+    }
+    
+    public void getTopTags(HttpServletRequest request, HttpServletResponse response) throws SQLException,ServletException, IOException {
+    	List<Tag> tags = tagDAO.getView();
+    	request.setAttribute("tagList", tags);
+    	request.getRequestDispatcher("tagView.jsp").forward(request, response);
     }
     
     private void follow(HttpServletRequest request, HttpServletResponse response) throws SQLException,ServletException, IOException{

@@ -160,6 +160,7 @@ public class FollowDAO {
 				+ "from follows "
 				+ "where followerEmail = ?"
 				+ ");";
+		connect_func();
 		preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
 		preparedStatement.setString(1, userOne);
 		preparedStatement.setString(2, userTwo);
@@ -167,6 +168,8 @@ public class FollowDAO {
 		while(results.next()) {
 			list.add(results.getString("followeeEmail"));
 		}
+		disconnect();
+		results.close();
 		return list;	
 	}
 	
