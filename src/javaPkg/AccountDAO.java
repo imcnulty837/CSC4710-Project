@@ -158,7 +158,7 @@ public class AccountDAO {
         List<Account> listPeople = new ArrayList<Account>();        
         String sql = "SELECT * FROM User";      
         connect_func();      
-        statement =  (Statement) connect.createStatement();
+        statement = (Statement) connect.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
          
         while (resultSet.next()) {

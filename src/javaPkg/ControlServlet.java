@@ -321,12 +321,19 @@ public class ControlServlet extends HttpServlet {
     
     private void getUserList(HttpServletRequest request, HttpServletResponse response, String view) throws ServletException, IOException, SQLException{
     	if (view.equals("commonUsers")) {
-    		String userOne = request.getParameter("userOne");
-    		String userTwo = request.getParameter("userTwo");
+    		String userOne = (String) request.getParameter("userOne");
+    		System.out.println(userOne);
+    		String userTwo = (String) request.getParameter("userTwo");
+    		System.out.println(userTwo);
         	List<String> users = followDAO.commonUsers(userOne, userTwo);
-    		request.setAttribute("userList", users);
+        	//for (String i: users) {
+        	//	System.out.println(i);
+        	//}
+        	request.setAttribute("viewSwitch", true);
+    		request.setAttribute("commonList", users);
     	} else {
     		List<Account> users = accountDAO.getUserView(view);
+        	request.setAttribute("viewSwitch", false);
     		request.setAttribute("userList", users);
     	}
     	request.getRequestDispatcher("userView.jsp").forward(request, response);

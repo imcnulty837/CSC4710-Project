@@ -22,14 +22,15 @@
 		<form action="popularUsers" method="post"><input type="submit" value="Popular Users" /></form>
 		<form action="positiveUsers" method="post"><input type="submit" value="Positive Users" /></form>
 		<form action="inactiveUsers" method="post"><input type="submit" value="Inactive Users" /></form>
-		<form action="commonUsers" method="post"><input type="submit" value="Common Users"></form>
+		<form action="commonUsers" method="post">
 		<table>	
 			<tr>
 			    <td class = "select">User One:</td>
 			    <td>
 			    <select name="userOne">        
-			        <c:forEach items="${fullUserList}" var="User">
-			            <option value="${User.email}">${User.email}</option>	
+			        <c:forEach items="${fullUserList}" var="Account">
+			        	<c:set var="email" value="${Account.email}"/>
+			            <option value="${email}">${Account.email}</option>	
 			        </c:forEach>
 			    </select>
 			    </td>   
@@ -38,13 +39,16 @@
 			    <td class = "select">User Two:</td>
 			    <td>
 			    <select name="userTwo">        
-			        <c:forEach items="${fullUserList}" var="User">
-			            <option value="${User.email}">${User.email}</option>	
+			        <c:forEach items="${fullUserList}" var="Account">
+			        	<c:set var="email" value="${Account.email}"/>
+			            <option value="${email}">${Account.email}</option>	
 			        </c:forEach>
 			    </select>
 			    </td>   
 			</tr>
 		</table>
+		<input type="submit" value="Common Users">
+		</form>
 		
 		<h1>Tag Views!</h1>
 		<form action="topTags" method="post"><input type="submit" value="Top Tags!"></form>

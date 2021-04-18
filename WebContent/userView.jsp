@@ -13,11 +13,23 @@
             <tr>
                 <th> Email </th>
             </tr>
-            <c:forEach items="${userList}" var="Account" varStatus="i">
-                <tr>
-                    <td>${Account.email}</td>
-                </tr>
-            </c:forEach>
+            <c:choose>
+            	<c:when test="${viewSwitch == true}">
+            		<c:forEach items="${commonList}" var="email" varStatus="i">
+		                <tr>
+		                    <td>${email}</td>
+		                </tr>
+		            </c:forEach>
+            	</c:when>
+            	<c:otherwise>
+            		<c:forEach items="${userList}" var="Account" varStatus="i">
+		                <tr>
+		                    <td>${Account.email}</td>
+		                </tr>
+		            </c:forEach>
+            	</c:otherwise>
+            </c:choose>
+            
         </table>
     </div>
 </body>
