@@ -13,3 +13,38 @@ getting started:
 -posts are restricted to 5 per day per user
 -likes are restricted to 3 per day per user
 -enjoy =D
+
+contributions:
+Ian McNulty:
+- Register.jsp
+- ControlServlet functions
+- AccountDAO/Account
+- LikeDAO/Like
+- FollowDAO/Follow
+- TagDAO/Tag
+- ImageTagDAO/Tag
+- CommentsDAO/Comment
+- comment view under image
+- getUserView
+- userview.jsp
+- tagview.jsp
+- tag.getView
+- SQL View statement creation of views 7 - 10
+Nicholas Foster:
+- sqlBatchExecutor
+- Databaseinit.sql
+- populateTables.sql
+- Login.jsp
+- Feed Page.jsp
+- Community Page.jsp
+- rootView.jsp
+- getUserList
+- getCommonUser
+- getImageView
+- ControlServlet functions
+- ImageDAO/Image
+- Like/Dislike Button
+- Follow/Unfollow Button
+- Feed Page primary view
+- Tag view under images
+- SQL View statement creation of views 1 - 6
