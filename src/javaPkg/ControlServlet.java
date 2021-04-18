@@ -36,6 +36,7 @@ public class ControlServlet extends HttpServlet {
     private TagDAO tagDAO = new TagDAO();
     private ImageTagDAO imageTagDAO = new ImageTagDAO();
     private LikeDAO likeDAO = new LikeDAO();
+    private CommentDAO commentDAO = new CommentDAO();
     private String currentUser;
     
     public ControlServlet() {
@@ -48,6 +49,7 @@ public class ControlServlet extends HttpServlet {
         followDAO = new FollowDAO();
         tagDAO = new TagDAO();
         imageTagDAO = new ImageTagDAO();
+        commentDAO = new CommentDAO();
         currentUser = "";
     }
     
@@ -294,6 +296,7 @@ public class ControlServlet extends HttpServlet {
     	List<Image> images = imageDAO.getFeed(currentUser);
     	for(Image i : images) {
     		i.setTags(imageTagDAO.getTags(i.getImageId()));
+    		i.setComments(commentDAO.getComments(i.getImageId()));
     	}
     	for (int i = 0; i < images.size(); i = i+1) {
     		Image temp = images.get(i);

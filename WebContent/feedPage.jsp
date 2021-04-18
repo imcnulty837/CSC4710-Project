@@ -40,8 +40,12 @@
 		<c:forEach items="${listImages}" var="Image">
 			<h4>posted by ${Image.email} at <time>${Image.timestamp}</time></h4>
 			<img src=${Image.url} alt="image">
-			<p>Likes: ${Image.likeCount}, Description: ${Image.description}</p><br>
-			<p>tags: ${Image.tags}</p><br>
+			<p>Likes: ${Image.likeCount}, Description: ${Image.description}</p>
+			<p>Tags: ${Image.tags}</p>
+			<p>Comments: </p>
+			<c:forEach items="${Image.comments}" var="C">
+				<p> ${C.comment} - commented by ${C.email}</p>
+			</c:forEach>
 			<c:choose>
 				<c:when test = "${Image.likeSwitch}">
 					<form action="dislike?url=${Image.url}&id=${Image.imageId}" method="post"><input type="submit" value="Unlike"/></form>

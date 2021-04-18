@@ -13,6 +13,7 @@ public class Image {
 	protected int likeCount;
 	protected boolean likeSwitch;
 	protected String tags;
+	protected List<Comment> comments;
 	
 	public Image() {
 		
@@ -105,5 +106,13 @@ public class Image {
 	
 	public String getTags() {
 		return tags;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	public List<Comment> getComments(){
+		return this.comments;
 	}
 }
